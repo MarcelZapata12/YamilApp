@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 
 const WHATSAPP_URL =
-  'https://wa.me/50687042194?text=Hola,%20me%20gustaria%20recibir%20asesoria%20legal.';
+  'https://wa.me/50687042194?text=Hola,%20me%20gustar%C3%ADa%20recibir%20asesor%C3%ADa%20legal.';
 
 export default function WhatsAppFloat() {
   const pathname = usePathname();
@@ -24,7 +24,8 @@ export default function WhatsAppFloat() {
       <svg
         aria-hidden="true"
         viewBox="0 0 32 32"
-        className="h-7 w-7 md:h-8 md:w-8"
+        className="h-7 w-7 shrink-0 md:h-8 md:w-8"
+        style={{ transform: 'translate(0.5px, 0.5px)' }}
         fill="currentColor"
       >
         <path d="M19.11 17.14c-.28-.14-1.63-.8-1.88-.89-.25-.09-.43-.14-.62.14-.18.28-.71.89-.87 1.08-.16.18-.32.21-.59.07-.28-.14-1.17-.43-2.22-1.37-.82-.73-1.38-1.64-1.54-1.92-.16-.28-.02-.43.12-.57.13-.13.28-.32.41-.48.14-.16.18-.28.28-.46.09-.18.04-.34-.02-.48-.07-.14-.62-1.5-.85-2.05-.22-.53-.45-.46-.62-.47h-.53c-.18 0-.48.07-.73.34-.25.28-.96.93-.96 2.26 0 1.33.98 2.62 1.12 2.8.14.18 1.92 2.93 4.65 4.11.65.28 1.16.45 1.56.57.66.21 1.26.18 1.74.11.53-.08 1.63-.66 1.86-1.3.23-.64.23-1.19.16-1.3-.07-.11-.25-.18-.53-.32Z" />

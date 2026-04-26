@@ -61,7 +61,7 @@ export default function Documentos() {
         <div className="mx-auto accent-divider"></div>
 
         <p className="mt-3 text-sm text-[var(--text-secondary)] md:text-base">
-          Documentos juridicos disponibles para consulta y descarga
+          Documentos jurídicos disponibles para consulta y descarga.
         </p>
       </section>
 

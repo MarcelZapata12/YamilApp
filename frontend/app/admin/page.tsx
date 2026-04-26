@@ -110,7 +110,7 @@ export default function Admin() {
       return config;
     } catch (requestError) {
       setError(
-        getErrorMessage(requestError, 'Error cargando la portada del inicio')
+        getErrorMessage(requestError, 'Error al cargar la portada del inicio')
       );
       return null;
     }
@@ -177,7 +177,7 @@ export default function Admin() {
     }
 
     if (!heroBackgroundFile.type.startsWith('image/')) {
-      setError('Solo se permiten imagenes para la portada');
+      setError('Solo se permiten imágenes para la portada');
       return;
     }
 
@@ -203,7 +203,7 @@ export default function Admin() {
         .catch(() => null)) as SiteConfigResponse | null;
 
       if (!res.ok) {
-        throw new Error(payload?.msg ?? 'Error actualizando la portada');
+        throw new Error(payload?.msg ?? 'Error al actualizar la portada');
       }
 
       if (payload?.configuracion) {
@@ -218,10 +218,10 @@ export default function Admin() {
         refreshedConfig?.heroBackgroundImageUpdatedAt &&
           refreshedConfig.heroBackgroundImageUpdatedAt !== previousUpdatedAt
           ? 'La portada del inicio fue actualizada correctamente'
-          : 'La portada se guardo y fue refrescada correctamente'
+          : 'La portada se guardó y fue actualizada correctamente'
       );
     } catch (requestError) {
-      setError(getErrorMessage(requestError, 'Error actualizando la portada'));
+      setError(getErrorMessage(requestError, 'Error al actualizar la portada'));
     } finally {
       setSiteLoading(false);
     }
@@ -336,7 +336,7 @@ export default function Admin() {
       return;
     }
 
-    if (!confirm('Eliminar este documento?')) {
+    if (!confirm('¿Eliminar este documento?')) {
       return;
     }
 
@@ -368,7 +368,7 @@ export default function Admin() {
       return;
     }
 
-    if (!confirm('Eliminar esta recomendacion de libro?')) {
+    if (!confirm('¿Eliminar esta recomendación de libro?')) {
       return;
     }
 
@@ -453,7 +453,7 @@ export default function Admin() {
         </h1>
         <div className="mx-auto accent-divider"></div>
         <p className="mt-3 text-sm text-[var(--text-secondary)] md:text-base">
-          Gestion de portada, documentos y recomendaciones de lectura
+          Gestión de portada, documentos y recomendaciones de lectura.
         </p>
       </section>
 
@@ -475,7 +475,7 @@ export default function Admin() {
             <div>
               <h2 className="text-xl font-semibold">Portada del inicio</h2>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                Aqui puedes cambiar la imagen difuminada que aparece detras del
+                Aquí puedes cambiar la imagen difuminada que aparece detrás del
                 hero principal del inicio.
               </p>
             </div>
@@ -539,8 +539,8 @@ export default function Admin() {
                   Hero de inicio
                 </h3>
                 <p className="mt-4 max-w-md text-sm leading-relaxed text-[#4a4337]">
-                  El fondo conservara su color original con un desenfoque suave
-                  para acompanar el hero sin quitar protagonismo al contenido
+                  El fondo conservará su color original con un desenfoque suave
+                  para acompañar el hero sin quitar protagonismo al contenido
                   principal.
                 </p>
               </div>
@@ -550,15 +550,15 @@ export default function Admin() {
               <div className="soft-surface rounded-[1.75rem] p-5">
                 <h3 className="text-lg font-semibold">Actualizar fondo</h3>
                 <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                  Recomendacion: usa una imagen horizontal de buena calidad,
+                  Recomendación: usa una imagen horizontal de buena calidad,
                   preferiblemente relacionada con despacho, libros o ambiente
-                  juridico.
+                  jurídico.
                 </p>
 
                 {isContainedHeroAsset && (
                   <p className="mt-3 text-sm text-[var(--accent)]">
                     La imagen actual es cuadrada o vertical, por eso el inicio
-                    la mostrara como una marca de agua centrada.
+                    la mostrará como una marca de agua centrada.
                   </p>
                 )}
               </div>
@@ -567,7 +567,7 @@ export default function Admin() {
                 <div className="overflow-hidden rounded-[1.75rem] border border-[var(--border-color)] bg-[var(--surface-strong)] p-4">
                   <p className="text-sm font-medium">Imagen actual cargada</p>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                    Aqui debes poder verla claramente aunque la portada final la
+                    Aquí debes poder verla claramente aunque la portada final la
                     use de forma difuminada.
                   </p>
 
@@ -610,8 +610,8 @@ export default function Admin() {
                   {heroBackgroundFile
                     ? heroBackgroundFile.name
                     : siteConfig.heroBackgroundImageUrl
-                    ? 'Usando imagen actual guardada'
-                    : 'Aun no hay imagen configurada'}
+                    ? 'Usando la imagen actual guardada'
+                    : 'Aún no hay una imagen configurada'}
                 </span>
               </div>
 
@@ -632,7 +632,7 @@ export default function Admin() {
           <form onSubmit={handleSubmitArticulo} className="space-y-4">
             <input
               type="text"
-              placeholder="Titulo del documento"
+              placeholder="Título del documento"
               value={titulo}
               onChange={(event) => setTitulo(event.target.value)}
               className="input-field"
@@ -654,7 +654,7 @@ export default function Admin() {
               </label>
 
               <span className="text-sm text-[var(--text-secondary)]">
-                {archivo ? archivo.name : 'Ningun archivo seleccionado'}
+                {archivo ? archivo.name : 'Ningún archivo seleccionado'}
               </span>
             </div>
 
@@ -676,7 +676,7 @@ export default function Admin() {
           <form onSubmit={handleSubmitLibro} className="space-y-4">
             <input
               type="text"
-              placeholder="Titulo del libro"
+              placeholder="Título del libro"
               value={libroTitulo}
               onChange={(event) => setLibroTitulo(event.target.value)}
               className="input-field"
@@ -684,7 +684,7 @@ export default function Admin() {
             />
 
             <textarea
-              placeholder="Pequena descripcion del libro"
+              placeholder="Pequeña descripción del libro"
               value={libroDescripcion}
               onChange={(event) => setLibroDescripcion(event.target.value)}
               className="textarea-field"
@@ -693,7 +693,7 @@ export default function Admin() {
 
             <input
               type="text"
-              placeholder="Link del sitio oficial donde se compra"
+              placeholder="Enlace del sitio oficial donde se compra"
               value={libroEnlace}
               onChange={(event) => setLibroEnlace(event.target.value)}
               className="input-field"
@@ -705,7 +705,7 @@ export default function Admin() {
               disabled={bookLoading}
               className="neutral-button px-6 py-2 disabled:opacity-50"
             >
-              {bookLoading ? 'Guardando...' : 'Guardar recomendacion'}
+              {bookLoading ? 'Guardando...' : 'Guardar recomendación'}
             </button>
           </form>
         </div>
@@ -773,7 +773,7 @@ export default function Admin() {
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold">Libros recomendados</h2>
             <span className="text-sm text-[var(--text-secondary)]">
-              {libros.length} recomendacion(es)
+              {libros.length} recomendación(es)
             </span>
           </div>
 

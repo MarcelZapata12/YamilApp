@@ -27,7 +27,7 @@ export async function getResponseMessage(
 
 export function getErrorMessage(
   error: unknown,
-  fallback = 'Ocurrio un error inesperado'
+  fallback = 'Ocurrió un error inesperado'
 ) {
   return error instanceof Error ? error.message : fallback;
 }

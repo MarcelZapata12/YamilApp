@@ -34,7 +34,8 @@ type HolidayApiItem = {
 };
 
 function parseEventDate(date: string) {
-  return new Date(`${date}T00:00:00`);
+  const normalizedDate = date.includes('T') ? date.split('T')[0] : date;
+  return new Date(`${normalizedDate}T00:00:00`);
 }
 
 function formatEventDate(date: string) {
@@ -49,6 +50,29 @@ function isUpcomingEvent(date: string) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return parseEventDate(date) >= today;
+}
+
+function getImportantReminders(eventos: Evento[]) {
+  const importantes = eventos.filter((evento) => evento.importante);
+  const upcoming = importantes
+    .filter((evento) => isUpcomingEvent(evento.fecha))
+    .sort(
+      (first, second) =>
+        parseEventDate(first.fecha).getTime() -
+        parseEventDate(second.fecha).getTime()
+    );
+
+  if (upcoming.length > 0) {
+    return upcoming.slice(0, 4);
+  }
+
+  return importantes
+    .sort(
+      (first, second) =>
+        parseEventDate(second.fecha).getTime() -
+        parseEventDate(first.fecha).getTime()
+    )
+    .slice(0, 4);
 }
 
 function getColor(eventoTipo: EventoTipo | 'Feriado') {
@@ -254,9 +278,7 @@ export default function Calendario() {
     }
   };
 
-  const proximosImportantes = eventosInternos
-    .filter((evento) => evento.importante && isUpcomingEvent(evento.fecha))
-    .slice(0, 4);
+  const recordatoriosDestacados = getImportantReminders(eventosInternos);
 
   const renderEventContent = (eventContent: EventContentArg) => {
     const eventData = eventContent.event.extendedProps as Partial<Evento> & {
@@ -367,7 +389,7 @@ export default function Calendario() {
             <div className="mt-5 rounded-3xl border border-[var(--border-color)] bg-[var(--surface-strong)] p-5">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold">Siguiente prioridad</p>
+                  <p className="text-sm font-semibold">Recordatorio destacado</p>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
                     Se refleja tambien en la portada
                   </p>
@@ -377,14 +399,14 @@ export default function Calendario() {
                 </span>
               </div>
 
-              {proximosImportantes.length > 0 ? (
+              {recordatoriosDestacados.length > 0 ? (
                 <div className="mt-4">
                   <p className="text-lg font-semibold">
-                    {proximosImportantes[0].titulo}
+                    {recordatoriosDestacados[0].titulo}
                   </p>
                   <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                    {formatEventDate(proximosImportantes[0].fecha)} ·{' '}
-                    {proximosImportantes[0].tipo}
+                    {formatEventDate(recordatoriosDestacados[0].fecha)} ·{' '}
+                    {recordatoriosDestacados[0].tipo}
                   </p>
                 </div>
               ) : (
@@ -418,8 +440,8 @@ export default function Calendario() {
               </p>
 
               <div className="mt-5 space-y-3">
-                {proximosImportantes.length > 0 ? (
-                  proximosImportantes.map((evento) => (
+                {recordatoriosDestacados.length > 0 ? (
+                  recordatoriosDestacados.map((evento) => (
                     <div
                       key={evento._id}
                       className="soft-surface rounded-2xl p-4"

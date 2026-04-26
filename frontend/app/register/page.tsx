@@ -68,7 +68,7 @@ export default function Register() {
         <form onSubmit={register} className="space-y-4">
           <input
             type="email"
-            placeholder="Correo electronico"
+            placeholder="Correo electrónico"
             className="input-field"
             onChange={(event) => setEmail(event.target.value)}
             required
@@ -76,7 +76,7 @@ export default function Register() {
 
           <input
             type="password"
-            placeholder="Contrasena"
+            placeholder="Contraseña"
             className="input-field"
             onChange={(event) => setPassword(event.target.value)}
             required

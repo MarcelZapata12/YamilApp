@@ -114,7 +114,7 @@ export default function Navbar() {
           setStoredUserEmail(data.email);
         }
       } catch {
-        // Si falla esta carga secundaria, mantenemos la sesion actual y el fallback visual.
+        // Si falla esta carga secundaria, mantenemos la sesión actual y el fallback visual.
       }
     };
 
@@ -145,9 +145,9 @@ export default function Navbar() {
               <Image
                 src="/logoNuevo.png"
                 alt="Logo"
-                width={180}
-                height={180}
-                className="h-12 w-auto object-contain transition duration-300 group-hover:scale-105 sm:h-16 lg:h-24"
+                width={220}
+                height={220}
+                className="h-14 w-auto object-contain transition duration-300 group-hover:scale-105 sm:h-20 lg:h-28"
                 priority
               />
               <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
@@ -206,7 +206,7 @@ export default function Navbar() {
                     href="/login"
                     className="secondary-button px-4 py-2 text-sm"
                   >
-                    Login
+                    Iniciar sesión
                   </Link>
 
                   <Link
@@ -279,7 +279,7 @@ export default function Navbar() {
                           onClick={() => setOpenMenuPath(null)}
                           className="neutral-button w-full text-sm"
                         >
-                          Seguir aqui
+                          Seguir aquí
                         </button>
 
                         <button
@@ -287,7 +287,7 @@ export default function Navbar() {
                           onClick={logout}
                           className="danger-button w-full text-sm"
                         >
-                          Cerrar sesion
+                          Cerrar sesión
                         </button>
                       </div>
                     </div>
@@ -297,12 +297,12 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-[var(--text-secondary)] lg:gap-6">
+          <div className="flex flex-wrap items-center gap-5 text-base font-semibold text-[var(--text-secondary)] lg:gap-7">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`transition ${
+                className={`rounded-xl px-1 py-2 transition md:px-2 ${
                   pathname === link.href
                     ? 'text-[var(--accent)] underline underline-offset-4'
                     : 'hover:text-[var(--accent)]'
@@ -315,7 +315,7 @@ export default function Navbar() {
             {authState.isAdmin && (
               <Link
                 href="/admin"
-                className={`transition ${
+                className={`rounded-xl px-1 py-2 transition md:px-2 ${
                   pathname === '/admin'
                     ? 'text-[var(--accent)] underline underline-offset-4'
                     : 'hover:text-[var(--accent)]'

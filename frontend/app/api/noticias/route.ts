@@ -39,7 +39,7 @@ function getPublicErrorMessage(error: unknown) {
     error instanceof Error &&
     /too many requests|blocked because/i.test(error.message)
   ) {
-    return 'El proveedor de noticias esta temporalmente limitado. Intenta de nuevo en unos minutos.';
+    return 'El proveedor de noticias está temporalmente limitado. Intenta de nuevo en unos minutos.';
   }
 
   return 'No se pudieron cargar las noticias en este momento.';
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
       cached: true,
       fetchedAt: noticiasCache.fetchedAt,
       warning:
-        'Se muestran noticias recientes para evitar el limite del proveedor.',
+        'Se muestran noticias recientes para evitar el límite del proveedor.',
     });
   }
 
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
         stale: true,
         fetchedAt: noticiasCache.fetchedAt,
         warning:
-          'Mostrando noticias guardadas porque el proveedor limito temporalmente las solicitudes.',
+          'Mostrando noticias guardadas porque el proveedor limitó temporalmente las solicitudes.',
       });
     }
 

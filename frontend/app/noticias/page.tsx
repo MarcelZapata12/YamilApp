@@ -26,7 +26,9 @@ const NEWS_CACHE_KEY = 'noticias-cache-v1';
 
 function formatTimestamp(value: number) {
   const date = new Date(value);
-  return `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`;
+  return `${date.toLocaleDateString('es-CR')} - ${date.toLocaleTimeString(
+    'es-CR'
+  )}`;
 }
 
 function readNoticiasCache(): NoticiasCache | null {
@@ -154,13 +156,13 @@ export default function Noticias() {
     <main className="page-shell">
       <section className="hero-surface border-b border-[var(--border-color)] py-12 text-center">
         <h1 className="mb-3 text-4xl font-bold tracking-wide md:text-5xl">
-          Noticias juridicas
+          Noticias jurídicas
         </h1>
 
         <div className="mx-auto accent-divider"></div>
 
         <p className="mb-4 mt-3 text-sm text-[var(--text-secondary)] md:text-base">
-          Actualidad legal y juridica en Costa Rica
+          Actualidad legal y jurídica en Costa Rica.
         </p>
 
         <button
@@ -178,7 +180,7 @@ export default function Noticias() {
 
         {ultimaActualizacion && (
           <p className="mt-3 text-xs text-[var(--text-tertiary)]">
-            Ultima actualizacion: {ultimaActualizacion}
+            Última actualización: {ultimaActualizacion}
           </p>
         )}
       </section>
@@ -226,7 +228,7 @@ export default function Noticias() {
                     rel="noopener noreferrer"
                     className="secondary-button px-4 py-2 text-sm"
                   >
-                    Leer mas
+                    Leer más
                   </a>
                 </div>
               </div>
@@ -236,7 +238,7 @@ export default function Noticias() {
 
         {!loading && news.length === 0 && !error && (
           <p className="text-center text-[var(--text-tertiary)]">
-            No hay noticias disponibles
+            No hay noticias disponibles.
           </p>
         )}
       </section>

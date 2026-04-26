@@ -46,8 +46,8 @@ export default function Libros() {
         <div className="mx-auto accent-divider"></div>
 
         <p className="mx-auto mt-3 max-w-2xl px-6 text-sm text-[var(--text-secondary)] md:text-base">
-          Seleccion de lecturas sugeridas por la administracion para ampliar
-          criterio juridico, formacion profesional y consulta especializada.
+          Selección de lecturas sugeridas por la administración para ampliar el
+          criterio jurídico, la formación profesional y la consulta especializada.
         </p>
       </section>
 
@@ -63,10 +63,10 @@ export default function Libros() {
         {!loading && !error && libros.length === 0 && (
           <div className="panel-surface rounded-[2rem] p-10 text-center">
             <h2 className="text-xl font-semibold mb-2">
-              Aun no hay recomendaciones
+              Aún no hay recomendaciones
             </h2>
             <p className="text-[var(--text-secondary)]">
-              Cuando el administrador agregue libros, apareceran aqui con su
+              Cuando el administrador agregue libros, aparecerán aquí con su
               enlace de compra oficial.
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function Libros() {
                 <div className="mb-4 flex items-start justify-between gap-4">
                   <div>
                     <p className="mb-2 text-xs uppercase tracking-[0.2em] text-[var(--accent)]">
-                      Recomendacion
+                      Recomendación
                     </p>
                     <h2 className="text-2xl font-semibold leading-tight">
                       {libro.titulo}

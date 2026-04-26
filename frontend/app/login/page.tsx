@@ -31,14 +31,14 @@ export default function Login() {
 
       if (!res.ok) {
         throw new Error(
-          await getResponseMessage(res, 'No se pudo iniciar sesion')
+          await getResponseMessage(res, 'No se pudo iniciar sesión')
         );
       }
 
       const data = (await res.json()) as LoginResponse;
 
       if (!data.token) {
-        throw new Error('Respuesta invalida del servidor');
+        throw new Error('Respuesta inválida del servidor');
       }
 
       persistAuthSession({
@@ -47,7 +47,7 @@ export default function Login() {
       });
       window.location.href = '/documentos';
     } catch (requestError) {
-      setError(getErrorMessage(requestError, 'No se pudo iniciar sesion'));
+      setError(getErrorMessage(requestError, 'No se pudo iniciar sesión'));
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ export default function Login() {
         <form onSubmit={login} className="space-y-4">
           <input
             type="email"
-            placeholder="Correo electronico"
+            placeholder="Correo electrónico"
             className="input-field"
             onChange={(event) => setEmail(event.target.value)}
             required
@@ -81,7 +81,7 @@ export default function Login() {
 
           <input
             type="password"
-            placeholder="Contrasena"
+            placeholder="Contraseña"
             className="input-field"
             onChange={(event) => setPassword(event.target.value)}
             required

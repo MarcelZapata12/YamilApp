@@ -86,7 +86,7 @@ export async function fetchSiteConfig() {
   });
 
   if (!response.ok) {
-    throw new Error('No se pudo cargar la configuracion visual del inicio');
+    throw new Error('No se pudo cargar la configuración visual del inicio');
   }
 
   const config = (await response.json()) as SiteConfig;

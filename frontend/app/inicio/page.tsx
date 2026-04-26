@@ -22,8 +22,17 @@ type Evento = {
   importante?: boolean;
 };
 
+function getTipoEventoLabel(tipo: Evento['tipo']) {
+  if (tipo === 'Economico') {
+    return 'Económico';
+  }
+
+  return tipo;
+}
+
 function parseEventDate(date: string) {
-  return new Date(`${date}T00:00:00`);
+  const normalizedDate = date.includes('T') ? date.split('T')[0] : date;
+  return new Date(`${normalizedDate}T00:00:00`);
 }
 
 function formatEventDate(date: string) {
@@ -38,6 +47,29 @@ function isUpcomingEvent(date: string) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return parseEventDate(date) >= today;
+}
+
+function getImportantReminders(eventos: Evento[]) {
+  const importantes = eventos.filter((evento) => evento.importante);
+  const upcoming = importantes
+    .filter((evento) => isUpcomingEvent(evento.fecha))
+    .sort(
+      (first, second) =>
+        parseEventDate(first.fecha).getTime() -
+        parseEventDate(second.fecha).getTime()
+    );
+
+  if (upcoming.length > 0) {
+    return upcoming.slice(0, 3);
+  }
+
+  return importantes
+    .sort(
+      (first, second) =>
+        parseEventDate(second.fecha).getTime() -
+        parseEventDate(first.fecha).getTime()
+    )
+    .slice(0, 3);
 }
 
 export default function Inicio() {
@@ -84,11 +116,7 @@ export default function Inicio() {
         }
 
         const eventos = (await response.json()) as Evento[];
-        const eventosImportantes = eventos
-          .filter((evento) => evento.importante && isUpcomingEvent(evento.fecha))
-          .slice(0, 3);
-
-        setRecordatorios(eventosImportantes);
+        setRecordatorios(getImportantReminders(eventos));
       } catch (requestError) {
         setErrorRecordatorios(
           getErrorMessage(
@@ -185,9 +213,9 @@ export default function Inicio() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#3f3a32] md:text-lg">
-              Brindamos asesoria juridica estrategica, acompanamiento tecnico y
-              lectura normativa con enfoque serio, cercano y profesional para
-              procesos legales, analisis legislativo y toma de decisiones.
+              Brindamos asesoría jurídica estratégica, acompañamiento técnico y
+              lectura normativa, con un enfoque serio, cercano y profesional
+              para procesos legales, análisis legislativo y toma de decisiones.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -253,8 +281,8 @@ export default function Inicio() {
           !errorRecordatorios &&
           recordatorios.length === 0 && (
             <div className="panel-surface rounded-[2rem] p-6 text-center text-[var(--text-secondary)]">
-              Todavia no hay eventos marcados como importantes. Cuando el
-              administrador los agregue, apareceran aqui automaticamente.
+              Todavía no hay eventos marcados como importantes. Cuando el
+              administrador los agregue, aparecerán aquí automáticamente.
             </div>
           )}
 
@@ -275,7 +303,7 @@ export default function Inicio() {
                   {formatEventDate(evento.fecha)}
                 </p>
                 <p className="mt-2 inline-flex rounded-full bg-[var(--surface-muted)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
-                  {evento.tipo}
+                  {getTipoEventoLabel(evento.tipo)}
                 </p>
               </article>
             ))}
@@ -291,15 +319,15 @@ export default function Inicio() {
           {[
             {
               title: 'Experiencia legislativa',
-              desc: 'Mas de 29 anos participando en procesos normativos y asesoria institucional.',
+              desc: 'Más de 29 años participando en procesos normativos y asesoría institucional.',
             },
             {
-              title: 'Analisis estrategico',
-              desc: 'Evaluacion juridica con criterio tecnico, contexto politico y lectura integral.',
+              title: 'Análisis estratégico',
+              desc: 'Evaluación jurídica con criterio técnico, contexto político y lectura integral.',
             },
             {
               title: 'Resultados confiables',
-              desc: 'Soluciones legales orientadas a seguridad juridica y toma de decisiones responsables.',
+              desc: 'Soluciones legales orientadas a la seguridad jurídica y a la toma de decisiones responsables.',
             },
           ].map((item) => (
             <div key={item.title} className="panel-surface rounded-[2rem] p-6">
@@ -316,7 +344,7 @@ export default function Inicio() {
 
       <section className="section-surface mt-12 border-y border-[var(--border-color)] px-6 py-14">
         <div className="mx-auto max-w-7xl text-center">
-          <h2 className="text-2xl font-semibold">Areas de practica</h2>
+          <h2 className="text-2xl font-semibold">Áreas de práctica</h2>
           <div className="mx-auto mt-4 accent-divider"></div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -324,9 +352,9 @@ export default function Inicio() {
               'Derecho penal',
               'Derecho laboral',
               'Derecho administrativo',
-              'Tecnica legislativa',
-              'Analisis normativo',
-              'Consultoria juridica',
+              'Técnica legislativa',
+              'Análisis normativo',
+              'Consultoría jurídica',
             ].map((area) => (
               <div key={area} className="soft-surface rounded-2xl p-5">
                 <p className="font-medium text-[var(--text-primary)]">{area}</p>

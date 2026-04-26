@@ -9,7 +9,7 @@ export default function About() {
         </h1>
         <div className="mx-auto accent-divider"></div>
         <p className="mt-3 text-sm text-[var(--text-secondary)] md:text-base">
-          Trayectoria, experiencia y formacion juridica
+          Trayectoria, experiencia y formación jurídica.
         </p>
       </section>
 
@@ -34,15 +34,15 @@ export default function About() {
             </h2>
 
             <p className="mb-4 text-base font-medium text-[var(--accent)] md:text-lg">
-              Abogado y notario publico
+              Abogado y notario público
             </p>
 
             <p className="mb-6 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
-              Abogado y notario publico con mas de 29 anos de experiencia en la
+              Abogado y notario público con más de 29 años de experiencia en la
               Asamblea Legislativa de Costa Rica. Especialista en derecho
-              parlamentario, tecnica legislativa, legislacion penal, ambiental y
-              analisis normativo. Experiencia en redaccion de leyes,
-              investigaciones juridicas y apoyo a comisiones legislativas.
+              parlamentario, técnica legislativa, legislación penal, ambiental y
+              análisis normativo. Experiencia en redacción de leyes,
+              investigaciones jurídicas y apoyo a comisiones legislativas.
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
@@ -76,25 +76,25 @@ export default function About() {
       <section className="section-surface border-y border-[var(--border-color)] py-16">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <h3 className="mb-4 text-2xl font-semibold">
-            Experiencia relevante para consultoria
+            Experiencia relevante para consultoría
           </h3>
 
           <div className="mx-auto accent-divider"></div>
 
           <div className="mt-10 grid gap-10 text-left text-[var(--text-secondary)] md:grid-cols-2">
-            <ul className="space-y-3">
-              <li>• Asesoria en procesos legislativos complejos</li>
-              <li>• Docencia universitaria en Derecho</li>
-              <li>• Publicaciones e investigacion juridica</li>
-              <li>• Elaboracion y analisis de proyectos de ley</li>
-              <li>• Participacion en control politico</li>
+            <ul className="list-disc space-y-3 pl-5">
+              <li>Asesoría en procesos legislativos complejos</li>
+              <li>Docencia universitaria en Derecho</li>
+              <li>Publicaciones e investigación jurídica</li>
+              <li>Elaboración y análisis de proyectos de ley</li>
+              <li>Participación en control político</li>
             </ul>
 
-            <ul className="space-y-3">
-              <li>• Seguridad publica y crimen organizado</li>
-              <li>• Capacitacion a funcionarios publicos</li>
-              <li>• Impacto del deporte en la sociedad</li>
-              <li>• Evolucion normativa ambiental</li>
+            <ul className="list-disc space-y-3 pl-5">
+              <li>Seguridad pública y crimen organizado</li>
+              <li>Capacitación a funcionarios públicos</li>
+              <li>Impacto del deporte en la sociedad</li>
+              <li>Evolución normativa ambiental</li>
             </ul>
           </div>
         </div>
@@ -106,17 +106,17 @@ export default function About() {
         <div className="mx-auto accent-divider"></div>
 
         <div className="mt-10 grid gap-10 text-left text-[var(--text-secondary)] md:grid-cols-2">
-          <ul className="space-y-3">
-            <li>• Tecnica legislativa y calidad normativa</li>
-            <li>• Elaboracion y revision de proyectos de ley</li>
-            <li>• Docencia universitaria especializada</li>
-            <li>• Capacitacion parlamentaria</li>
+          <ul className="list-disc space-y-3 pl-5">
+            <li>Técnica legislativa y calidad normativa</li>
+            <li>Elaboración y revisión de proyectos de ley</li>
+            <li>Docencia universitaria especializada</li>
+            <li>Capacitación parlamentaria</li>
           </ul>
 
-          <ul className="space-y-3">
-            <li>• Capacitacion en materia agraria y ambiental</li>
-            <li>• Analisis de politicas publicas en seguridad</li>
-            <li>• Fortalecimiento institucional</li>
+          <ul className="list-disc space-y-3 pl-5">
+            <li>Capacitación en materia agraria y ambiental</li>
+            <li>Análisis de políticas públicas en seguridad</li>
+            <li>Fortalecimiento institucional</li>
           </ul>
         </div>
       </section>
