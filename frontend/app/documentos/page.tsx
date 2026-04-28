@@ -55,7 +55,7 @@ export default function Documentos() {
     <main className="page-shell">
       <section className="hero-surface border-b border-[var(--border-color)] py-12 text-center">
         <h1 className="mb-3 text-4xl font-bold tracking-wide md:text-5xl">
-          Biblioteca legal
+          Biblioteca
         </h1>
 
         <div className="mx-auto accent-divider"></div>

@@ -192,7 +192,7 @@ export default function Inicio() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(250,247,242,0.88)_0%,rgba(250,247,242,0.72)_34%,rgba(250,247,242,0.26)_60%,rgba(250,247,242,0.04)_100%)]"></div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0.08)_100%)]"></div>
 
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:py-20">
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[1fr_0.88fr] lg:items-center lg:py-20">
           <div className="max-w-3xl text-[#171717]">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#d2ad62]">
               Derecho y Sociedad
@@ -232,16 +232,16 @@ export default function Inicio() {
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[530px]">
-            <div className="absolute -inset-4 rounded-[2.25rem] bg-[radial-gradient(circle,rgba(255,255,255,0.7),transparent_66%)] blur-2xl"></div>
+          <div className="relative mx-auto w-full max-w-[500px] lg:mx-0 lg:justify-self-end lg:max-w-[470px]">
+            <div className="absolute -inset-3 rounded-[2.25rem] bg-[radial-gradient(circle,rgba(255,255,255,0.7),transparent_66%)] blur-2xl"></div>
 
             <div className="relative overflow-hidden rounded-[2.25rem] border border-[#dcc89e]/45 bg-white/55 p-4 shadow-[0_28px_70px_rgba(97,74,25,0.18)] backdrop-blur-md">
               <div className="overflow-hidden rounded-[1.8rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(244,239,231,0.95))] p-4">
                 <Image
                   src="/perfil.jpeg"
                   alt="Perfil del abogado"
-                  width={720}
-                  height={860}
+                  width={620}
+                  height={500}
                   className="h-auto w-full rounded-[1.35rem] object-cover"
                   priority
                 />
