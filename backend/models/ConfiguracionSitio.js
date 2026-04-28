@@ -18,6 +18,14 @@ const configuracionSitioSchema = new mongoose.Schema(
       type: String,
       default: 'image'
     },
+    heroBackgroundImageDeliveryType: {
+      type: String,
+      default: 'private'
+    },
+    heroBackgroundImageFormat: {
+      type: String,
+      default: null
+    },
     heroBackgroundImageFit: {
       type: String,
       enum: ['cover', 'contain', null],

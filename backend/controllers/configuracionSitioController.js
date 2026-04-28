@@ -1,5 +1,9 @@
 const ConfiguracionSitio = require('../models/ConfiguracionSitio');
-const { deleteAsset, uploadBuffer } = require('../utils/cloudinaryStorage');
+const {
+  buildPrivateDownloadUrl,
+  deleteAsset,
+  uploadBuffer
+} = require('../utils/cloudinaryStorage');
 const { getImageDimensions } = require('../utils/imageMetadata');
 
 function resolveHeroFit(width, height) {
@@ -78,8 +82,10 @@ exports.actualizarHeroBackground = async (req, res) => {
     const configuracion = await getOrCreateConfig();
     const previousPublicId = configuracion.heroBackgroundImagePublicId;
     const previousResourceType = configuracion.heroBackgroundImageResourceType;
+    const previousDeliveryType = configuracion.heroBackgroundImageDeliveryType;
     const uploadedImage = await uploadBuffer(req.file, {
       folder: 'yamilapp/site-settings',
+      deliveryType: 'private',
       resourceType: 'image'
     });
 
@@ -87,11 +93,17 @@ exports.actualizarHeroBackground = async (req, res) => {
     configuracion.heroBackgroundImageUrl = uploadedImage.url;
     configuracion.heroBackgroundImagePublicId = uploadedImage.publicId;
     configuracion.heroBackgroundImageResourceType = uploadedImage.resourceType;
+    configuracion.heroBackgroundImageDeliveryType = uploadedImage.deliveryType;
+    configuracion.heroBackgroundImageFormat = uploadedImage.format;
     configuracion.heroBackgroundImageFit = resolveHeroFitFromBuffer(req.file.buffer);
     await configuracion.save();
 
     if (previousPublicId && previousPublicId !== uploadedImage.publicId) {
-      await deleteAsset(previousPublicId, previousResourceType || 'image');
+      await deleteAsset(
+        previousPublicId,
+        previousResourceType || 'image',
+        previousDeliveryType || 'private'
+      );
     }
 
     res.json({
@@ -115,7 +127,26 @@ exports.obtenerHeroBackground = async (req, res) => {
       return res.status(404).json({ msg: 'No hay imagen configurada' });
     }
 
-    res.redirect(configuracion.heroBackgroundImageUrl);
+    const downloadUrl = buildPrivateDownloadUrl({
+      publicId: configuracion.heroBackgroundImagePublicId,
+      format: configuracion.heroBackgroundImageFormat,
+      resourceType: configuracion.heroBackgroundImageResourceType || 'image',
+      deliveryType: configuracion.heroBackgroundImageDeliveryType || 'private',
+      expiresInSeconds: 60
+    });
+    const cloudinaryResponse = await fetch(downloadUrl);
+
+    if (!cloudinaryResponse.ok || !cloudinaryResponse.body) {
+      return res.status(404).json({ msg: 'No se encontro la imagen solicitada' });
+    }
+
+    res.setHeader(
+      'Content-Type',
+      cloudinaryResponse.headers.get('content-type') || 'application/octet-stream'
+    );
+
+    const arrayBuffer = await cloudinaryResponse.arrayBuffer();
+    res.send(Buffer.from(arrayBuffer));
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: 'Error del servidor' });

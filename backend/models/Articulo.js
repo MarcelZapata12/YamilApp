@@ -22,6 +22,14 @@ const articuloSchema = new mongoose.Schema({
     type: String,
     default: 'raw'
   },
+  cloudinaryDeliveryType: {
+    type: String,
+    default: 'private'
+  },
+  cloudinaryFormat: {
+    type: String,
+    default: 'pdf'
+  },
   tipoArchivo: {
     type: String,
     default: 'pdf'
