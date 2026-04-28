@@ -10,6 +10,18 @@ const articuloSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  archivoUrl: {
+    type: String,
+    required: true
+  },
+  cloudinaryPublicId: {
+    type: String,
+    required: true
+  },
+  cloudinaryResourceType: {
+    type: String,
+    default: 'raw'
+  },
   tipoArchivo: {
     type: String,
     default: 'pdf'

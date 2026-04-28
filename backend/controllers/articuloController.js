@@ -1,6 +1,5 @@
 const Articulo = require('../models/Articulo');
-const fs = require('fs');
-const path = require('path');
+const { deleteAsset, uploadBuffer } = require('../utils/cloudinaryStorage');
 
 // ==========================
 // CREAR ARTICULO
@@ -19,9 +18,17 @@ exports.crearArticulo = async (req, res) => {
       return res.status(400).json({ msg: 'El titulo es obligatorio' });
     }
 
+    const uploadedFile = await uploadBuffer(req.file, {
+      folder: 'yamilapp/documentos',
+      resourceType: 'raw'
+    });
+
     const nuevo = new Articulo({
       titulo: req.body.titulo.trim(),
-      archivo: req.file.filename,
+      archivo: req.file.originalname,
+      archivoUrl: uploadedFile.url,
+      cloudinaryPublicId: uploadedFile.publicId,
+      cloudinaryResourceType: uploadedFile.resourceType,
       tipoArchivo: req.file.mimetype
     });
 
@@ -62,11 +69,10 @@ exports.eliminarArticulo = async (req, res) => {
       return res.status(404).json({ msg: 'No encontrado' });
     }
 
-    const rutaArchivo = path.join(__dirname, '../uploads', articulo.archivo);
-
-    if (fs.existsSync(rutaArchivo)) {
-      fs.unlinkSync(rutaArchivo);
-    }
+    await deleteAsset(
+      articulo.cloudinaryPublicId,
+      articulo.cloudinaryResourceType || 'raw'
+    );
 
     await Articulo.findByIdAndDelete(req.params.id);
 
@@ -88,9 +94,7 @@ exports.obtenerArchivo = async (req, res) => {
       return res.status(404).json({ msg: 'No encontrado' });
     }
 
-    const rutaArchivo = path.join(__dirname, '../uploads', articulo.archivo);
-
-    if (!fs.existsSync(rutaArchivo)) {
+    if (!articulo.archivoUrl) {
       return res.status(404).json({ msg: 'Archivo no existe' });
     }
 
@@ -99,7 +103,7 @@ exports.obtenerArchivo = async (req, res) => {
     res.setHeader('Content-Type', articulo.tipoArchivo || 'application/pdf');
     res.setHeader('Content-Disposition', `inline; filename="${nombreSeguro}"`);
 
-    res.sendFile(rutaArchivo);
+    res.redirect(articulo.archivoUrl);
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Error del servidor' });

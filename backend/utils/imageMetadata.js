@@ -116,6 +116,10 @@ function getJpegDimensions(buffer) {
 function getImageDimensionsSync(filePath) {
   const buffer = fs.readFileSync(filePath);
 
+  return getImageDimensions(buffer);
+}
+
+function getImageDimensions(buffer) {
   return (
     getPngDimensions(buffer) ||
     getGifDimensions(buffer) ||
@@ -125,5 +129,6 @@ function getImageDimensionsSync(filePath) {
 }
 
 module.exports = {
+  getImageDimensions,
   getImageDimensionsSync,
 };
