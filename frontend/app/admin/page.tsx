@@ -547,22 +547,6 @@ export default function Admin() {
             </div>
 
             <form onSubmit={handleSubmitHeroBackground} className="space-y-4">
-              <div className="soft-surface rounded-[1.75rem] p-5">
-                <h3 className="text-lg font-semibold">Actualizar fondo</h3>
-                <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                  Recomendación: usa una imagen horizontal de buena calidad,
-                  preferiblemente relacionada con despacho, libros o ambiente
-                  jurídico.
-                </p>
-
-                {isContainedHeroAsset && (
-                  <p className="mt-3 text-sm text-[var(--accent)]">
-                    La imagen actual es cuadrada o vertical, por eso el inicio
-                    la mostrará como una marca de agua centrada.
-                  </p>
-                )}
-              </div>
-
               {currentHeroBackgroundUrl && (
                 <div className="overflow-hidden rounded-[1.75rem] border border-[var(--border-color)] bg-[var(--surface-strong)] p-4">
                   <p className="text-sm font-medium">Imagen actual cargada</p>
