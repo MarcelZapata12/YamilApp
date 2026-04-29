@@ -46,8 +46,10 @@ exports.crearArticulo = async (req, res) => {
       articulo: saved
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: 'Error del servidor' });
+    console.error('Error al crear documento:', err);
+    res.status(500).json({
+      msg: err.message || 'Error del servidor'
+    });
   }
 };
 
