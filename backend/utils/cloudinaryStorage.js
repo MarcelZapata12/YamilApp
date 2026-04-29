@@ -29,6 +29,20 @@ function signParams(params, apiSecret) {
   return crypto.createHash('sha1').update(`${payload}${apiSecret}`).digest('hex');
 }
 
+async function readCloudinaryResponse(response) {
+  const text = await response.text();
+
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return {
+      error: {
+        message: `Cloudinary respondio con estado ${response.status}`,
+      },
+    };
+  }
+}
+
 function buildPrivateDownloadUrl(asset) {
   const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
   const timestamp = Math.floor(Date.now() / 1000);
@@ -60,6 +74,7 @@ async function uploadBuffer(file, options = {}) {
   const params = {
     timestamp,
     folder: options.folder,
+    type: deliveryType,
     use_filename: true,
     unique_filename: true,
   };
@@ -81,13 +96,13 @@ async function uploadBuffer(file, options = {}) {
   );
 
   const response = await fetch(
-    `${CLOUDINARY_API_BASE}/${cloudName}/${resourceType}/${deliveryType}/upload`,
+    `${CLOUDINARY_API_BASE}/${cloudName}/${resourceType}/upload`,
     {
       method: 'POST',
       body: formData,
     }
   );
-  const data = await response.json();
+  const data = await readCloudinaryResponse(response);
 
   if (!response.ok) {
     throw new Error(data?.error?.message || 'No se pudo subir el archivo');
@@ -131,7 +146,7 @@ async function deleteAsset(publicId, resourceType = 'image', deliveryType = 'pri
       body: formData,
     }
   );
-  const data = await response.json();
+  const data = await readCloudinaryResponse(response);
 
   if (!response.ok) {
     throw new Error(data?.error?.message || 'No se pudo borrar el archivo');
