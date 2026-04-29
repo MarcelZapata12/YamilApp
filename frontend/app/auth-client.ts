@@ -30,6 +30,14 @@ let authStateCache: AuthState = EMPTY_AUTH_STATE;
 let authTokenCache: string | null = null;
 let authEmailCache: string | null = null;
 
+function isExpiredPayload(payload: AuthPayload | null) {
+  if (!payload?.exp) {
+    return false;
+  }
+
+  return payload.exp * 1000 <= Date.now();
+}
+
 function decodeBase64Url(value: string) {
   const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
   const padding = normalized.length % 4;
@@ -61,7 +69,16 @@ export function getStoredToken() {
     return null;
   }
 
-  return window.localStorage.getItem('token');
+  const token = window.localStorage.getItem('token');
+  const payload = readTokenPayload(token);
+
+  if (token && (!payload || isExpiredPayload(payload))) {
+    window.localStorage.removeItem('token');
+    window.localStorage.removeItem(AUTH_EMAIL_KEY);
+    return null;
+  }
+
+  return token;
 }
 
 export function getStoredUserEmail() {
@@ -162,6 +179,34 @@ export function clearAuthSession() {
   window.localStorage.removeItem('token');
   window.localStorage.removeItem(AUTH_EMAIL_KEY);
   notifyAuthChanged();
+}
+
+export async function validateAuthSession(token: string) {
+  const response = await fetch(
+    `${
+      (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000').replace(
+        /\/$/,
+        ''
+      )
+    }/api/auth/me`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-store',
+    }
+  ).catch(() => null);
+
+  if (!response) {
+    return true;
+  }
+
+  if (response.status === 401) {
+    clearAuthSession();
+    return false;
+  }
+
+  return response.ok;
 }
 
 export function getUserDisplayName(email: string | null) {

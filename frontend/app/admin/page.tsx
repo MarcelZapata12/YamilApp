@@ -15,10 +15,12 @@ import {
   openArticulo,
 } from '../articulos-client';
 import {
+  clearAuthSession,
   getAuthState,
   getServerAuthState,
   getStoredToken,
   subscribeToAuth,
+  validateAuthSession,
 } from '../auth-client';
 import { type Libro } from '../libros-client';
 import {
@@ -66,6 +68,27 @@ export default function Admin() {
   const [siteLoading, setSiteLoading] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
+
+  const handleUnauthorized = useCallback(() => {
+    clearAuthSession();
+    setMensaje('');
+    setError('Tu sesión expiró o dejó de ser válida. Inicia sesión nuevamente.');
+    router.push('/login');
+  }, [router]);
+
+  const assertAuthorizedResponse = useCallback(
+    async (response: Response, fallback: string) => {
+      if (response.status === 401) {
+        handleUnauthorized();
+        throw new Error('Tu sesión expiró o dejó de ser válida. Inicia sesión nuevamente.');
+      }
+
+      if (!response.ok) {
+        throw new Error(await getResponseMessage(response, fallback));
+      }
+    },
+    [handleUnauthorized]
+  );
 
   const cargarArticulos = useCallback(async () => {
     try {
@@ -131,29 +154,53 @@ export default function Admin() {
   }, [heroBackgroundFile]);
 
   useEffect(() => {
-    if (!authState.token) {
-      router.push('/login');
-      return;
-    }
+    let cancelled = false;
 
-    if (!authState.isAdmin) {
-      router.push('/inicio');
-      return;
-    }
+    const initializeAdmin = async () => {
+      if (!authState.token) {
+        router.push('/login');
+        return;
+      }
 
-    if (hasCachedSiteConfig()) {
-      setSiteConfig(getCachedSiteConfig());
-    }
+      if (!authState.isAdmin) {
+        router.push('/inicio');
+        return;
+      }
 
-    void cargarArticulos();
-    void cargarLibros();
-    void cargarConfiguracionSitio();
+      const isValidSession = await validateAuthSession(authState.token);
+
+      if (!isValidSession) {
+        if (!cancelled) {
+          handleUnauthorized();
+        }
+        return;
+      }
+
+      if (hasCachedSiteConfig()) {
+        setSiteConfig(getCachedSiteConfig());
+      }
+
+      if (!cancelled) {
+        await Promise.all([
+          cargarArticulos(),
+          cargarLibros(),
+          cargarConfiguracionSitio(),
+        ]);
+      }
+    };
+
+    void initializeAdmin();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     authState.isAdmin,
     authState.token,
     cargarArticulos,
     cargarConfiguracionSitio,
     cargarLibros,
+    handleUnauthorized,
     router,
   ]);
 
@@ -201,6 +248,11 @@ export default function Admin() {
       const payload = (await res
         .json()
         .catch(() => null)) as SiteConfigResponse | null;
+
+      if (res.status === 401) {
+        handleUnauthorized();
+        throw new Error('Tu sesión expiró o dejó de ser válida. Inicia sesión nuevamente.');
+      }
 
       if (!res.ok) {
         throw new Error(payload?.msg ?? 'Error al actualizar la portada');
@@ -264,9 +316,7 @@ export default function Admin() {
         },
       });
 
-      if (!res.ok) {
-        throw new Error(await getResponseMessage(res, 'Error al subir archivo'));
-      }
+      await assertAuthorizedResponse(res, 'Error al subir archivo');
 
       setMensaje('Documento subido correctamente');
       setTitulo('');
@@ -308,11 +358,10 @@ export default function Admin() {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error(
-          await getResponseMessage(res, 'Error guardando el libro recomendado')
-        );
-      }
+      await assertAuthorizedResponse(
+        res,
+        'Error al guardar el libro recomendado'
+      );
 
       setMensaje('Libro recomendado agregado correctamente');
       setLibroTitulo('');
@@ -348,9 +397,7 @@ export default function Admin() {
         },
       });
 
-      if (!res.ok) {
-        throw new Error(await getResponseMessage(res, 'Error al eliminar'));
-      }
+      await assertAuthorizedResponse(res, 'Error al eliminar');
 
       setMensaje('Documento eliminado correctamente');
       setError('');
@@ -380,9 +427,7 @@ export default function Admin() {
         },
       });
 
-      if (!res.ok) {
-        throw new Error(await getResponseMessage(res, 'Error al eliminar'));
-      }
+      await assertAuthorizedResponse(res, 'Error al eliminar');
 
       setMensaje('Libro recomendado eliminado correctamente');
       setError('');
