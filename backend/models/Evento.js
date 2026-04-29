@@ -11,6 +11,11 @@ const EventoSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    descripcion: {
+      type: String,
+      default: '',
+      trim: true
+    },
     tipo: {
       type: String,
       enum: ['Legal', 'Economico', 'Otro'],

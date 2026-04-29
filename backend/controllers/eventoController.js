@@ -9,12 +9,16 @@ function normalizeImportante(value) {
   return value === true || value === 'true' || value === '1' || value === 1;
 }
 
+function normalizeDescripcion(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
 // ==========================
 // CREAR EVENTO
 // ==========================
 exports.crearEvento = async (req, res) => {
   try {
-    const { titulo, fecha, tipo, importante } = req.body;
+    const { titulo, fecha, tipo, importante, descripcion } = req.body;
 
     if (!titulo || !fecha) {
       return res.status(400).json({ msg: 'Titulo y fecha son obligatorios' });
@@ -23,6 +27,7 @@ exports.crearEvento = async (req, res) => {
     const nuevo = new Evento({
       titulo: titulo.trim(),
       fecha,
+      descripcion: normalizeDescripcion(descripcion),
       tipo: normalizeTipo(tipo),
       importante: normalizeImportante(importante)
     });
@@ -57,13 +62,14 @@ exports.obtenerEventos = async (req, res) => {
 // ==========================
 exports.editarEvento = async (req, res) => {
   try {
-    const { titulo, fecha, tipo, importante } = req.body;
+    const { titulo, fecha, tipo, importante, descripcion } = req.body;
 
     const evento = await Evento.findByIdAndUpdate(
       req.params.id,
       {
         titulo: titulo?.trim(),
         fecha,
+        descripcion: normalizeDescripcion(descripcion),
         tipo: normalizeTipo(tipo),
         importante: normalizeImportante(importante)
       },

@@ -24,6 +24,7 @@ type Evento = {
   _id?: string;
   titulo: string;
   fecha: string;
+  descripcion?: string;
   tipo: EventoTipo;
   importante?: boolean;
 };
@@ -31,6 +32,16 @@ type Evento = {
 type HolidayApiItem = {
   localName: string;
   date: string;
+};
+
+type CalendarDetail = {
+  id?: string;
+  titulo: string;
+  fecha: string;
+  descripcion?: string;
+  tipo: EventoTipo | 'Feriado';
+  importante?: boolean;
+  editable: boolean;
 };
 
 function parseEventDate(date: string) {
@@ -102,10 +113,13 @@ export default function Calendario() {
   const [eventosInternos, setEventosInternos] = useState<Evento[]>([]);
   const [cantidadFeriados, setCantidadFeriados] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarDetail | null>(null);
   const [editando, setEditando] = useState(false);
   const [eventoId, setEventoId] = useState('');
   const [titulo, setTitulo] = useState('');
   const [fecha, setFecha] = useState('');
+  const [descripcion, setDescripcion] = useState('');
   const [tipo, setTipo] = useState<EventoTipo>('Legal');
   const [importante, setImportante] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -149,6 +163,9 @@ export default function Calendario() {
             date: feriado.date,
             backgroundColor: getColor('Feriado'),
             extendedProps: {
+              fecha: feriado.date,
+              titulo: feriado.localName,
+              descripcion: 'Feriado oficial de Costa Rica.',
               tipo: 'Feriado',
               importante: false,
             },
@@ -190,6 +207,7 @@ export default function Calendario() {
 
     setTitulo('');
     setFecha('');
+    setDescripcion('');
     setTipo('Legal');
     setImportante(false);
     setEditando(false);
@@ -200,18 +218,41 @@ export default function Calendario() {
   };
 
   const handleEventClick = (info: EventClickArg) => {
-    if (!authState.isAdmin || !info.event.id) {
+    const eventData = info.event.extendedProps as Partial<Evento> & {
+      tipo?: EventoTipo | 'Feriado';
+    };
+    const detail: CalendarDetail = {
+      id: info.event.id || undefined,
+      titulo: eventData.titulo ?? info.event.title,
+      fecha:
+        eventData.fecha ??
+        info.event.startStr.split('T')[0] ??
+        new Date().toISOString().split('T')[0],
+      descripcion: eventData.descripcion,
+      tipo: eventData.tipo ?? 'Legal',
+      importante: Boolean(eventData.importante),
+      editable: Boolean(authState.isAdmin && info.event.id),
+    };
+
+    setSelectedEvent(detail);
+    setDetailOpen(true);
+    setMensaje('');
+    setError('');
+  };
+
+  const abrirEdicionDesdeDetalle = () => {
+    if (!authState.isAdmin || !selectedEvent?.id || selectedEvent.tipo === 'Feriado') {
       return;
     }
 
-    const evento = info.event.extendedProps as Evento;
-
-    setTitulo(evento.titulo);
-    setFecha(evento.fecha.split('T')[0]);
-    setTipo(evento.tipo);
-    setImportante(Boolean(evento.importante));
-    setEventoId(info.event.id);
+    setTitulo(selectedEvent.titulo);
+    setFecha(selectedEvent.fecha.split('T')[0]);
+    setDescripcion(selectedEvent.descripcion ?? '');
+    setTipo(selectedEvent.tipo);
+    setImportante(Boolean(selectedEvent.importante));
+    setEventoId(selectedEvent.id);
     setEditando(true);
+    setDetailOpen(false);
     setModalOpen(true);
     setMensaje('');
     setError('');
@@ -248,7 +289,7 @@ export default function Calendario() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ titulo, fecha, tipo, importante }),
+        body: JSON.stringify({ titulo, fecha, descripcion, tipo, importante }),
       });
 
       if (!res.ok) {
@@ -312,10 +353,6 @@ export default function Calendario() {
             eventContent.event.backgroundColor || getColor(eventType),
         }}
       >
-        <div className="calendar-event-meta">
-          <span>{eventType}</span>
-          {isImportant && <span className="calendar-event-badge">Recordar</span>}
-        </div>
         <div className="calendar-event-title">{eventContent.event.title}</div>
       </div>
     );
@@ -556,6 +593,18 @@ export default function Calendario() {
                 </div>
               </div>
 
+              <div>
+                <label className="mb-2 block text-sm font-medium">
+                  Descripcion breve
+                </label>
+                <textarea
+                  className="textarea-field min-h-28"
+                  value={descripcion}
+                  onChange={(event) => setDescripcion(event.target.value)}
+                  placeholder="Agrega detalles que se mostraran al abrir el evento"
+                />
+              </div>
+
               <label className="soft-surface flex items-start gap-4 rounded-2xl p-4">
                 <input
                   type="checkbox"
@@ -599,6 +648,79 @@ export default function Calendario() {
                 Eliminar evento
               </button>
             )}
+          </div>
+        </div>
+      )}
+
+      {detailOpen && selectedEvent && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/55 px-4 backdrop-blur-sm"
+          onClick={() => setDetailOpen(false)}
+        >
+          <div
+            className="panel-surface max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-[1.5rem] p-5 sm:rounded-[2rem] sm:p-6"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--accent)]">
+                  {selectedEvent.tipo}
+                </p>
+                <h2 className="mt-3 text-2xl font-semibold">
+                  {selectedEvent.titulo}
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setDetailOpen(false)}
+                className="neutral-button h-10 w-10 shrink-0 rounded-full p-0"
+                aria-label="Cerrar detalle"
+              >
+                x
+              </button>
+            </div>
+
+            <div className="soft-surface rounded-2xl p-4">
+              <p className="text-sm text-[var(--text-tertiary)]">Fecha</p>
+              <p className="mt-1 font-semibold">
+                {formatEventDate(selectedEvent.fecha)}
+              </p>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-[var(--border-color)] bg-[var(--surface-strong)] p-4">
+              <p className="text-sm text-[var(--text-tertiary)]">Descripcion</p>
+              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[var(--text-secondary)]">
+                {selectedEvent.descripcion?.trim() ||
+                  'No hay descripcion adicional para este evento.'}
+              </p>
+            </div>
+
+            {selectedEvent.importante && (
+              <div className="mt-4 rounded-2xl border border-[var(--border-color)] bg-[var(--surface-muted)] p-4 text-sm font-medium text-[var(--accent)]">
+                Marcado como recordatorio importante.
+              </div>
+            )}
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {selectedEvent.editable && (
+                <button
+                  type="button"
+                  onClick={abrirEdicionDesdeDetalle}
+                  className="primary-button w-full"
+                >
+                  Editar evento
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setDetailOpen(false)}
+                className="neutral-button w-full"
+              >
+                Cerrar
+              </button>
+            </div>
           </div>
         </div>
       )}
