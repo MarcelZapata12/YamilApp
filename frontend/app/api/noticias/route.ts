@@ -9,7 +9,7 @@ type Noticia = {
 
 type ProviderResponse = {
   articles?: Noticia[];
-  errors?: string[];
+  errors?: string[] | Record<string, string>;
 };
 
 const NEWS_API_KEY =
@@ -34,12 +34,32 @@ function isCacheFresh(now: number) {
   );
 }
 
+function getProviderErrorMessage(data: ProviderResponse | null) {
+  if (Array.isArray(data?.errors)) {
+    return data.errors[0];
+  }
+
+  if (data?.errors && typeof data.errors === 'object') {
+    return Object.values(data.errors)[0];
+  }
+
+  return null;
+}
+
 function getPublicErrorMessage(error: unknown) {
   if (
     error instanceof Error &&
-    /too many requests|blocked because/i.test(error.message)
+    /too many requests|blocked because|429/i.test(error.message)
   ) {
     return 'El proveedor de noticias está temporalmente limitado. Intenta de nuevo en unos minutos.';
+  }
+
+  if (error instanceof Error && /request limit|quota|403/i.test(error.message)) {
+    return 'La cuota diaria de noticias se agoto. Intenta nuevamente manana.';
+  }
+
+  if (error instanceof Error && /api key|unauthorized|401/i.test(error.message)) {
+    return 'La clave de la API de noticias no es valida o no esta activa.';
   }
 
   return 'No se pudieron cargar las noticias en este momento.';
@@ -55,7 +75,7 @@ async function fetchProviderNews() {
 
   if (!response.ok) {
     throw new Error(
-      data?.errors?.[0] ?? 'No se pudieron cargar las noticias'
+      getProviderErrorMessage(data) ?? `GNews respondio con estado ${response.status}`
     );
   }
 
