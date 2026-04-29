@@ -1,9 +1,15 @@
 'use client';
 
-import { type FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { type FormEvent, useEffect, useState, useSyncExternalStore } from 'react';
 
 import { apiUrl, getErrorMessage, getResponseMessage } from '../api-client';
-import { persistAuthSession } from '../auth-client';
+import {
+  getAuthState,
+  getServerAuthState,
+  persistAuthSession,
+  subscribeToAuth,
+} from '../auth-client';
 
 type LoginResponse = {
   token?: string;
@@ -11,10 +17,24 @@ type LoginResponse = {
 };
 
 export default function Login() {
+  const router = useRouter();
+  const authState = useSyncExternalStore(
+    subscribeToAuth,
+    getAuthState,
+    getServerAuthState
+  );
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!authState.isLogged) {
+      return;
+    }
+
+    router.replace(authState.isAdmin ? '/admin' : '/documentos');
+  }, [authState.isAdmin, authState.isLogged, router]);
 
   const login = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,7 +65,7 @@ export default function Login() {
         token: data.token,
         email: data.email ?? email,
       });
-      window.location.href = '/documentos';
+      router.replace('/documentos');
     } catch (requestError) {
       setError(getErrorMessage(requestError, 'No se pudo iniciar sesión'));
     } finally {
