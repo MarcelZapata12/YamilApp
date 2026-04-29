@@ -111,6 +111,7 @@ export default function Calendario() {
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
+  const [isCompactCalendar, setIsCompactCalendar] = useState(false);
 
   const cargarEventos = useCallback(async () => {
     try {
@@ -167,6 +168,20 @@ export default function Calendario() {
   useEffect(() => {
     void cargarEventos();
   }, [cargarEventos]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 640px)');
+    const syncCompactCalendar = () => {
+      setIsCompactCalendar(mediaQuery.matches);
+    };
+
+    syncCompactCalendar();
+    mediaQuery.addEventListener('change', syncCompactCalendar);
+
+    return () => {
+      mediaQuery.removeEventListener('change', syncCompactCalendar);
+    };
+  }, []);
 
   const abrirNuevo = () => {
     if (!authState.isAdmin) {
@@ -465,7 +480,7 @@ export default function Calendario() {
             </div>
           </aside>
 
-          <div className="glass-surface rounded-[2rem] p-4 md:p-6">
+          <div className="calendar-shell glass-surface rounded-[2rem] p-3 md:p-6">
             <FullCalendar
               plugins={[dayGridPlugin]}
               initialView="dayGridMonth"
@@ -475,7 +490,7 @@ export default function Calendario() {
               locale={esLocale}
               height="auto"
               fixedWeekCount={false}
-              dayMaxEventRows={3}
+              dayMaxEventRows={isCompactCalendar ? 2 : 3}
             />
           </div>
         </div>
@@ -487,7 +502,7 @@ export default function Calendario() {
           onClick={() => setModalOpen(false)}
         >
           <div
-            className="panel-surface w-full max-w-lg rounded-[2rem] p-6"
+            className="panel-surface max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-[1.5rem] p-5 sm:rounded-[2rem] sm:p-6"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-6">
@@ -520,7 +535,7 @@ export default function Calendario() {
                   <label className="mb-2 block text-sm font-medium">Fecha</label>
                   <input
                     type="date"
-                    className="input-field"
+                    className="input-field date-field"
                     value={fecha}
                     onChange={(event) => setFecha(event.target.value)}
                     required

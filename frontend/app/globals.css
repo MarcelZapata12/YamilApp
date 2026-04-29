@@ -177,6 +177,16 @@ select {
   padding: 0.85rem 1rem;
 }
 
+.date-field {
+  min-height: 3.1rem;
+  color-scheme: light;
+  line-height: 1.25;
+}
+
+html[data-theme='dark'] .date-field {
+  color-scheme: dark;
+}
+
 .textarea-field {
   min-height: 8rem;
   padding: 1rem;
@@ -355,6 +365,7 @@ select {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  min-width: 0;
   padding: 0.55rem 0.65rem;
   border-radius: 0.95rem;
   color: #ffffff;
@@ -374,10 +385,18 @@ html[data-theme='dark'] .fc .calendar-event {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  min-width: 0;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.fc .calendar-event-meta span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .fc .calendar-event-badge {
@@ -387,9 +406,13 @@ html[data-theme='dark'] .fc .calendar-event {
 }
 
 .fc .calendar-event-title {
+  display: -webkit-box;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
   white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: unset !important;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   font-size: 12px;
   font-weight: 600;
   line-height: 1.25;
@@ -412,5 +435,69 @@ html[data-theme='dark'] .fc .calendar-event {
   .fc .fc-toolbar-chunk {
     display: flex;
     justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .calendar-shell {
+    border-radius: 1.25rem;
+  }
+
+  .fc {
+    font-size: 0.86rem;
+  }
+
+  .fc .fc-toolbar {
+    margin-bottom: 0.9rem;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.25rem;
+    text-align: center;
+  }
+
+  .fc .fc-col-header-cell-cushion {
+    padding: 0.45rem 0.1rem;
+    font-size: 0.9rem;
+  }
+
+  .fc .fc-daygrid-day-number {
+    padding: 0.35rem 0.35rem 0.1rem;
+    font-size: 0.9rem;
+  }
+
+  .fc .fc-daygrid-day-frame {
+    min-height: 86px;
+  }
+
+  .fc .fc-daygrid-day-events {
+    margin: 0 0.12rem 0.2rem;
+  }
+
+  .fc .fc-daygrid-event {
+    margin-top: 0.12rem;
+  }
+
+  .fc .calendar-event {
+    gap: 0.18rem;
+    padding: 0.34rem 0.36rem;
+    border-radius: 0.55rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);
+  }
+
+  .fc .calendar-event-meta {
+    display: block;
+    font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .fc .calendar-event-badge {
+    display: none;
+  }
+
+  .fc .calendar-event-title {
+    -webkit-line-clamp: 2;
+    font-size: 10px;
+    line-height: 1.15;
   }
 }
