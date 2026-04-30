@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const auth = require('../middleware/auth');
+const role = require('../middleware/role');
 
 const SECRET = process.env.JWT_SECRET;
 
@@ -51,6 +53,25 @@ router.post('/register', async (req, res) => {
     await user.save();
 
     res.status(201).json({ message: 'Usuario creado correctamente' });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ error: 'El usuario ya existe' });
+    }
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// =======================
+// LISTAR USUARIOS (ADMIN)
+// =======================
+router.get('/users', auth, role('admin'), async (req, res) => {
+  try {
+    const users = await User.find()
+      .select('email role createdAt')
+      .sort({ createdAt: -1, email: 1 });
+
+    res.json(users);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

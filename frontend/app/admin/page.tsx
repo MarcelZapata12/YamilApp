@@ -40,6 +40,24 @@ type SiteConfigResponse = {
   configuracion?: SiteConfig;
 };
 
+type CuentaAdmin = {
+  _id: string;
+  email: string;
+  role: 'admin' | 'usuario';
+  createdAt?: string;
+};
+
+function formatAccountDate(value?: string) {
+  if (!value) {
+    return 'Fecha no disponible';
+  }
+
+  return new Intl.DateTimeFormat('es-CR', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value));
+}
+
 export default function Admin() {
   const router = useRouter();
   const authState = useSyncExternalStore(
@@ -50,6 +68,7 @@ export default function Admin() {
 
   const [articulos, setArticulos] = useState<Articulo[]>([]);
   const [libros, setLibros] = useState<Libro[]>([]);
+  const [cuentas, setCuentas] = useState<CuentaAdmin[]>([]);
   const [siteConfig, setSiteConfig] = useState<SiteConfig>(EMPTY_SITE_CONFIG);
   const [titulo, setTitulo] = useState('');
   const [descripcionArticulo, setDescripcionArticulo] = useState('');
@@ -140,6 +159,26 @@ export default function Admin() {
     }
   }, []);
 
+  const cargarCuentas = useCallback(
+    async (token: string) => {
+      try {
+        const res = await fetch(apiUrl('/api/auth/users'), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        await assertAuthorizedResponse(res, 'Error cargando cuentas');
+
+        const data = (await res.json()) as CuentaAdmin[];
+        setCuentas(data);
+      } catch (requestError) {
+        setError(getErrorMessage(requestError, 'Error cargando cuentas'));
+      }
+    },
+    [assertAuthorizedResponse]
+  );
+
   useEffect(() => {
     if (!heroBackgroundFile) {
       setHeroBackgroundPreview(null);
@@ -186,6 +225,7 @@ export default function Admin() {
           cargarArticulos(),
           cargarLibros(),
           cargarConfiguracionSitio(),
+          cargarCuentas(authState.token),
         ]);
       }
     };
@@ -200,6 +240,7 @@ export default function Admin() {
     authState.token,
     cargarArticulos,
     cargarConfiguracionSitio,
+    cargarCuentas,
     cargarLibros,
     handleUnauthorized,
     router,
@@ -815,7 +856,7 @@ export default function Admin() {
           </div>
         </div>
 
-        <div>
+        <div className="mb-12">
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold">Libros recomendados</h2>
             <span className="text-sm text-[var(--text-secondary)]">
@@ -866,6 +907,48 @@ export default function Admin() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-semibold">Cuentas creadas</h2>
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                Usuarios registrados con acceso al sistema.
+              </p>
+            </div>
+            <span className="text-sm text-[var(--text-secondary)]">
+              {cuentas.length} cuenta(s)
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            {cuentas.map((cuenta) => (
+              <div
+                key={cuenta._id}
+                className="panel-surface flex flex-col gap-3 rounded-[1.75rem] p-5 md:flex-row md:items-center md:justify-between"
+              >
+                <div className="min-w-0">
+                  <h3 className="break-all text-lg font-semibold">
+                    {cuenta.email}
+                  </h3>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                    Creada: {formatAccountDate(cuenta.createdAt)}
+                  </p>
+                </div>
+
+                <span className="w-fit rounded-full bg-[var(--surface-muted)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
+                  {cuenta.role === 'admin' ? 'Administrador' : 'Usuario'}
+                </span>
+              </div>
+            ))}
+
+            {cuentas.length === 0 && (
+              <div className="panel-surface rounded-[1.75rem] p-5 text-sm text-[var(--text-secondary)]">
+                Aun no hay cuentas registradas.
+              </div>
+            )}
           </div>
         </div>
       </section>
