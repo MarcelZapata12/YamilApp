@@ -47,6 +47,8 @@ type CuentaAdmin = {
   createdAt?: string;
 };
 
+type AdminView = 'panel' | 'portada' | 'documentos' | 'libros' | 'cuentas';
+
 function formatAccountDate(value?: string) {
   if (!value) {
     return 'Fecha no disponible';
@@ -86,7 +88,7 @@ export default function Admin() {
   const [documentLoading, setDocumentLoading] = useState(false);
   const [bookLoading, setBookLoading] = useState(false);
   const [siteLoading, setSiteLoading] = useState(false);
-  const [mostrarCuentas, setMostrarCuentas] = useState(false);
+  const [vistaAdmin, setVistaAdmin] = useState<AdminView>('panel');
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
 
@@ -494,15 +496,23 @@ export default function Admin() {
     }
   };
 
-  const handleOpenAccounts = async () => {
+  const openAdminView = async (view: AdminView) => {
     const token = getStoredToken();
 
-    if (token) {
+    if (view === 'cuentas' && token) {
       await cargarCuentas(token);
     }
 
-    setMostrarCuentas(true);
+    setVistaAdmin(view);
     setMensaje('');
+    setError('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const backToAdminPanel = () => {
+    setVistaAdmin('panel');
+    setMensaje('');
+    setError('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -547,7 +557,7 @@ export default function Admin() {
     );
   }
 
-  if (mostrarCuentas) {
+  if (vistaAdmin === 'cuentas') {
     return (
       <main className="page-shell">
         <section className="hero-surface border-b border-[var(--border-color)] py-12 text-center">
@@ -567,10 +577,7 @@ export default function Admin() {
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <button
               type="button"
-              onClick={() => {
-                setMostrarCuentas(false);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onClick={backToAdminPanel}
               className="secondary-button w-fit px-5 py-2"
             >
               Volver al modulo admin
@@ -646,7 +653,91 @@ export default function Admin() {
           </div>
         )}
 
-        <div className="panel-surface mb-12 rounded-[2rem] p-6">
+        {vistaAdmin === 'panel' && (
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="panel-surface flex flex-col justify-between rounded-[2rem] p-6">
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+                  Inicio
+                </p>
+                <h2 className="text-2xl font-semibold">Portada del inicio</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  Cambia la imagen principal que aparece en el inicio.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void openAdminView('portada')}
+                className="primary-button mt-6 w-fit px-6 py-3"
+              >
+                Administrar portada
+              </button>
+            </div>
+
+            <div className="panel-surface flex flex-col justify-between rounded-[2rem] p-6">
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+                  Biblioteca
+                </p>
+                <h2 className="text-2xl font-semibold">Documentos</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  Sube PDFs y administra los documentos publicados.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void openAdminView('documentos')}
+                className="primary-button mt-6 w-fit px-6 py-3"
+              >
+                Administrar documentos ({articulos.length})
+              </button>
+            </div>
+
+            <div className="panel-surface flex flex-col justify-between rounded-[2rem] p-6">
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+                  Recomendaciones
+                </p>
+                <h2 className="text-2xl font-semibold">Libros</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  Agrega o elimina libros recomendados para compra.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void openAdminView('libros')}
+                className="primary-button mt-6 w-fit px-6 py-3"
+              >
+                Administrar libros ({libros.length})
+              </button>
+            </div>
+
+            <div className="panel-surface flex flex-col justify-between rounded-[2rem] p-6">
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+                  Acceso
+                </p>
+                <h2 className="text-2xl font-semibold">Cuentas creadas</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  Revisa los usuarios registrados con acceso al sistema.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void openAdminView('cuentas')}
+                className="primary-button mt-6 w-fit px-6 py-3"
+              >
+                Ver cuentas ({cuentas.length})
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div
+          className={`panel-surface mb-12 rounded-[2rem] p-6 ${
+            vistaAdmin === 'portada' ? '' : 'hidden'
+          }`}
+        >
           <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <h2 className="text-xl font-semibold">Portada del inicio</h2>
@@ -660,6 +751,14 @@ export default function Admin() {
               Hero editable
             </span>
           </div>
+
+          <button
+            type="button"
+            onClick={backToAdminPanel}
+            className="secondary-button mb-6 w-fit px-5 py-2"
+          >
+            Volver al panel admin
+          </button>
 
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="relative min-h-[320px] overflow-hidden rounded-[2rem] border border-[var(--border-color)] bg-[#f6f1e8]">
@@ -786,8 +885,21 @@ export default function Admin() {
           </div>
         </div>
 
-        <div className="panel-surface mb-12 rounded-[2rem] p-6">
-          <h2 className="mb-6 text-xl font-semibold">Subir documento</h2>
+        <div
+          className={`panel-surface mb-12 rounded-[2rem] p-6 ${
+            vistaAdmin === 'documentos' ? '' : 'hidden'
+          }`}
+        >
+          <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <h2 className="text-xl font-semibold">Subir documento</h2>
+            <button
+              type="button"
+              onClick={backToAdminPanel}
+              className="secondary-button w-fit px-5 py-2"
+            >
+              Volver al panel admin
+            </button>
+          </div>
 
           <form onSubmit={handleSubmitArticulo} className="space-y-4">
             <input
@@ -836,10 +948,23 @@ export default function Admin() {
           </form>
         </div>
 
-        <div className="panel-surface mb-12 rounded-[2rem] p-6">
-          <h2 className="mb-6 text-xl font-semibold">
-            Recomendar libro para compra
-          </h2>
+        <div
+          className={`panel-surface mb-12 rounded-[2rem] p-6 ${
+            vistaAdmin === 'libros' ? '' : 'hidden'
+          }`}
+        >
+          <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <h2 className="text-xl font-semibold">
+              Recomendar libro para compra
+            </h2>
+            <button
+              type="button"
+              onClick={backToAdminPanel}
+              className="secondary-button w-fit px-5 py-2"
+            >
+              Volver al panel admin
+            </button>
+          </div>
 
           <form onSubmit={handleSubmitLibro} className="space-y-4">
             <input
@@ -878,7 +1003,7 @@ export default function Admin() {
           </form>
         </div>
 
-        <div className="mb-12">
+        <div className={vistaAdmin === 'documentos' ? 'mb-12' : 'hidden'}>
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold">Documentos publicados</h2>
             <span className="text-sm text-[var(--text-secondary)]">
@@ -943,7 +1068,7 @@ export default function Admin() {
           </div>
         </div>
 
-        <div className="mb-12">
+        <div className={vistaAdmin === 'libros' ? 'mb-12' : 'hidden'}>
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold">Libros recomendados</h2>
             <span className="text-sm text-[var(--text-secondary)]">
@@ -997,24 +1122,6 @@ export default function Admin() {
           </div>
         </div>
 
-        <div className="panel-surface rounded-[2rem] p-6">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold">Cuentas creadas</h2>
-              <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                Revisa el listado de usuarios registrados en una vista aparte.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => void handleOpenAccounts()}
-              className="primary-button w-fit px-6 py-3"
-            >
-              Ver cuentas creadas ({cuentas.length})
-            </button>
-          </div>
-        </div>
       </section>
     </main>
   );
