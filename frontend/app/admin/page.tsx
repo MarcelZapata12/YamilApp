@@ -86,6 +86,7 @@ export default function Admin() {
   const [documentLoading, setDocumentLoading] = useState(false);
   const [bookLoading, setBookLoading] = useState(false);
   const [siteLoading, setSiteLoading] = useState(false);
+  const [mostrarCuentas, setMostrarCuentas] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
 
@@ -493,6 +494,18 @@ export default function Admin() {
     }
   };
 
+  const handleOpenAccounts = async () => {
+    const token = getStoredToken();
+
+    if (token) {
+      await cargarCuentas(token);
+    }
+
+    setMostrarCuentas(true);
+    setMensaje('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const currentHeroBackgroundUrl =
     heroBackgroundPreview ??
     (siteConfig.heroBackgroundImageUrl
@@ -531,6 +544,80 @@ export default function Admin() {
       <div className="page-shell flex h-screen items-center justify-center">
         <p className="text-[var(--text-secondary)]">Verificando acceso...</p>
       </div>
+    );
+  }
+
+  if (mostrarCuentas) {
+    return (
+      <main className="page-shell">
+        <section className="hero-surface border-b border-[var(--border-color)] py-12 text-center">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--accent)]">
+            Administracion
+          </p>
+          <h1 className="mb-3 text-4xl font-bold tracking-wide md:text-5xl">
+            Cuentas creadas
+          </h1>
+          <div className="mx-auto accent-divider"></div>
+          <p className="mt-3 text-sm text-[var(--text-secondary)] md:text-base">
+            Usuarios registrados con acceso al sistema.
+          </p>
+        </section>
+
+        <section className="mx-auto max-w-5xl px-6 py-12">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <button
+              type="button"
+              onClick={() => {
+                setMostrarCuentas(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="secondary-button w-fit px-5 py-2"
+            >
+              Volver al modulo admin
+            </button>
+
+            <span className="rounded-full bg-[var(--surface-muted)] px-4 py-2 text-sm font-semibold text-[var(--text-secondary)]">
+              {cuentas.length} cuenta(s)
+            </span>
+          </div>
+
+          {error && (
+            <div className="mb-6 text-center font-medium status-error">
+              {error}
+            </div>
+          )}
+
+          <div className="panel-surface rounded-[2rem] p-4 md:p-6">
+            <div className="space-y-4">
+              {cuentas.map((cuenta) => (
+                <div
+                  key={cuenta._id}
+                  className="flex flex-col gap-3 rounded-[1.5rem] border border-[var(--border-color)] bg-[var(--surface-strong)] p-5 md:flex-row md:items-center md:justify-between"
+                >
+                  <div className="min-w-0">
+                    <h2 className="break-all text-lg font-semibold">
+                      {cuenta.email}
+                    </h2>
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                      Creada: {formatAccountDate(cuenta.createdAt)}
+                    </p>
+                  </div>
+
+                  <span className="w-fit rounded-full bg-[var(--surface-muted)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
+                    {cuenta.role === 'admin' ? 'Administrador' : 'Usuario'}
+                  </span>
+                </div>
+              ))}
+
+              {cuentas.length === 0 && (
+                <div className="rounded-[1.5rem] border border-[var(--border-color)] bg-[var(--surface-strong)] p-5 text-sm text-[var(--text-secondary)]">
+                  Aun no hay cuentas registradas.
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
     );
   }
 
@@ -910,45 +997,22 @@ export default function Admin() {
           </div>
         </div>
 
-        <div>
-          <div className="mb-5 flex items-center justify-between gap-4">
+        <div className="panel-surface rounded-[2rem] p-6">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">Cuentas creadas</h2>
               <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                Usuarios registrados con acceso al sistema.
+                Revisa el listado de usuarios registrados en una vista aparte.
               </p>
             </div>
-            <span className="text-sm text-[var(--text-secondary)]">
-              {cuentas.length} cuenta(s)
-            </span>
-          </div>
 
-          <div className="space-y-4">
-            {cuentas.map((cuenta) => (
-              <div
-                key={cuenta._id}
-                className="panel-surface flex flex-col gap-3 rounded-[1.75rem] p-5 md:flex-row md:items-center md:justify-between"
-              >
-                <div className="min-w-0">
-                  <h3 className="break-all text-lg font-semibold">
-                    {cuenta.email}
-                  </h3>
-                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                    Creada: {formatAccountDate(cuenta.createdAt)}
-                  </p>
-                </div>
-
-                <span className="w-fit rounded-full bg-[var(--surface-muted)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
-                  {cuenta.role === 'admin' ? 'Administrador' : 'Usuario'}
-                </span>
-              </div>
-            ))}
-
-            {cuentas.length === 0 && (
-              <div className="panel-surface rounded-[1.75rem] p-5 text-sm text-[var(--text-secondary)]">
-                Aun no hay cuentas registradas.
-              </div>
-            )}
+            <button
+              type="button"
+              onClick={() => void handleOpenAccounts()}
+              className="primary-button w-fit px-6 py-3"
+            >
+              Ver cuentas creadas ({cuentas.length})
+            </button>
           </div>
         </div>
       </section>
