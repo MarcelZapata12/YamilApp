@@ -52,6 +52,7 @@ export default function Admin() {
   const [libros, setLibros] = useState<Libro[]>([]);
   const [siteConfig, setSiteConfig] = useState<SiteConfig>(EMPTY_SITE_CONFIG);
   const [titulo, setTitulo] = useState('');
+  const [descripcionArticulo, setDescripcionArticulo] = useState('');
   const [archivo, setArchivo] = useState<File | null>(null);
   const [fileInputKey, setFileInputKey] = useState(0);
   const [libroTitulo, setLibroTitulo] = useState('');
@@ -306,6 +307,7 @@ export default function Admin() {
 
       const formData = new FormData();
       formData.append('titulo', titulo);
+      formData.append('descripcion', descripcionArticulo);
       formData.append('archivo', archivo);
 
       const res = await fetch(apiUrl('/api/articulos'), {
@@ -320,6 +322,7 @@ export default function Admin() {
 
       setMensaje('Documento subido correctamente');
       setTitulo('');
+      setDescripcionArticulo('');
       setArchivo(null);
       setFileInputKey((current) => current + 1);
       await cargarArticulos();
@@ -668,6 +671,14 @@ export default function Admin() {
               required
             />
 
+            <textarea
+              placeholder="Descripcion breve del documento"
+              value={descripcionArticulo}
+              onChange={(event) => setDescripcionArticulo(event.target.value)}
+              className="textarea-field"
+              rows={4}
+            />
+
             <div className="flex flex-wrap items-center gap-4">
               <label className="secondary-button cursor-pointer px-4 py-2">
                 Seleccionar PDF
@@ -751,14 +762,20 @@ export default function Admin() {
             {articulos.map((articulo) => (
               <div
                 key={articulo._id}
-                className="panel-surface flex items-center justify-between rounded-[1.75rem] p-5 transition hover:-translate-y-0.5"
+                className="panel-surface flex flex-col gap-4 rounded-[1.75rem] p-5 transition hover:-translate-y-0.5 md:flex-row md:items-start md:justify-between"
               >
-                <div>
+                <div className="min-w-0 flex-1">
                   <h3 className="text-lg font-semibold">{articulo.titulo}</h3>
-                  <p className="text-sm text-[var(--text-tertiary)]">PDF</p>
+                  {articulo.descripcion ? (
+                    <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
+                      {articulo.descripcion}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-[var(--text-tertiary)]">PDF</p>
+                  )}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 md:shrink-0">
                   <button
                     type="button"
                     onClick={() =>

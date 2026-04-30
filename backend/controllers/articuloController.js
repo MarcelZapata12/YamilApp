@@ -5,6 +5,10 @@ const {
   uploadBuffer
 } = require('../utils/cloudinaryStorage');
 
+function normalizeDescripcion(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
 // ==========================
 // CREAR ARTICULO
 // ==========================
@@ -30,6 +34,7 @@ exports.crearArticulo = async (req, res) => {
 
     const nuevo = new Articulo({
       titulo: req.body.titulo.trim(),
+      descripcion: normalizeDescripcion(req.body.descripcion),
       archivo: req.file.originalname,
       archivoUrl: uploadedFile.url,
       cloudinaryPublicId: uploadedFile.publicId,

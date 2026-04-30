@@ -6,6 +6,11 @@ const articuloSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  descripcion: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   archivo: {
     type: String,
     required: true

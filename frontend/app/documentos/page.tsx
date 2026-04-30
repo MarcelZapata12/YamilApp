@@ -35,9 +35,14 @@ export default function Documentos() {
     void cargarArticulos();
   }, []);
 
-  const articulosFiltrados = articulos.filter((articulo) =>
-    articulo.titulo.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  const terminoBusqueda = busqueda.toLowerCase();
+  const articulosFiltrados = articulos.filter((articulo) => {
+    const descripcion = articulo.descripcion ?? '';
+
+    return `${articulo.titulo} ${descripcion}`
+      .toLowerCase()
+      .includes(terminoBusqueda);
+  });
 
   const handleAction = async (
     action: () => Promise<boolean>,
@@ -86,13 +91,23 @@ export default function Documentos() {
           {articulosFiltrados.map((articulo) => (
             <div
               key={articulo._id}
-              className="panel-surface flex flex-col gap-4 rounded-[1.75rem] p-5 transition hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between"
+              className="panel-surface flex flex-col gap-5 rounded-[1.75rem] p-5 transition hover:-translate-y-0.5 md:flex-row md:items-start md:justify-between md:p-6"
             >
-              <div>
-                <h3 className="text-lg font-semibold">{articulo.titulo}</h3>
+              <div className="min-w-0 flex-1">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+                  Documento
+                </p>
+                <h3 className="max-w-4xl text-xl font-semibold leading-snug text-[var(--text-primary)]">
+                  {articulo.titulo}
+                </h3>
+                {articulo.descripcion && (
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
+                    {articulo.descripcion}
+                  </p>
+                )}
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 md:shrink-0">
                 <button
                   type="button"
                   onClick={() =>

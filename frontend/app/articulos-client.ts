@@ -4,6 +4,7 @@ import { getStoredToken } from './auth-client';
 export type Articulo = {
   _id: string;
   titulo: string;
+  descripcion?: string;
   archivo: string;
   tipoArchivo?: string;
   fecha?: string;
