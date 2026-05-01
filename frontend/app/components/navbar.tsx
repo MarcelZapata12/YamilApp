@@ -10,7 +10,7 @@ import {
   useSyncExternalStore,
 } from 'react';
 
-import { apiUrl } from '../api-client';
+import { apiUrl, getResponseMessage } from '../api-client';
 import {
   clearAuthSession,
   getAuthState,
@@ -31,6 +31,7 @@ import {
 
 type CurrentUserResponse = {
   email?: string | null;
+  receiveEventReminders?: boolean;
 };
 
 const NAV_LINKS = [
@@ -55,6 +56,9 @@ export default function Navbar() {
   );
   const pathname = usePathname();
   const [openMenuPath, setOpenMenuPath] = useState<string | null>(null);
+  const [receiveEventReminders, setReceiveEventReminders] = useState(true);
+  const [preferenceLoading, setPreferenceLoading] = useState(false);
+  const [preferenceMessage, setPreferenceMessage] = useState('');
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuOpen = openMenuPath === pathname;
 
@@ -81,7 +85,7 @@ export default function Navbar() {
   }, [menuOpen]);
 
   useEffect(() => {
-    if (!authState.isLogged || authState.email) {
+    if (!authState.isLogged) {
       return;
     }
 
@@ -110,8 +114,14 @@ export default function Navbar() {
 
         const data = (await response.json()) as CurrentUserResponse;
 
-        if (!cancelled && data.email) {
-          setStoredUserEmail(data.email);
+        if (!cancelled) {
+          if (data.email && data.email !== authState.email) {
+            setStoredUserEmail(data.email);
+          }
+
+          if (typeof data.receiveEventReminders === 'boolean') {
+            setReceiveEventReminders(data.receiveEventReminders);
+          }
         }
       } catch {
         // Si falla esta carga secundaria, mantenemos la sesión actual y el fallback visual.
@@ -123,12 +133,68 @@ export default function Navbar() {
     return () => {
       cancelled = true;
     };
-  }, [authState.email, authState.isLogged]);
+  }, [authState.email, authState.isLogged, authState.token]);
 
   const logout = () => {
     setOpenMenuPath(null);
     clearAuthSession();
     window.location.href = '/inicio';
+  };
+
+  const toggleEventReminders = async () => {
+    const token = getStoredToken();
+
+    if (!token) {
+      clearAuthSession();
+      return;
+    }
+
+    const nextValue = !receiveEventReminders;
+
+    try {
+      setPreferenceLoading(true);
+      setPreferenceMessage('');
+
+      const response = await fetch(apiUrl('/api/auth/me/preferences'), {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          receiveEventReminders: nextValue,
+        }),
+      });
+
+      if (response.status === 401) {
+        clearAuthSession();
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          await getResponseMessage(response, 'No se pudo guardar la preferencia')
+        );
+      }
+
+      const data = (await response.json()) as CurrentUserResponse;
+      const savedValue = data.receiveEventReminders ?? nextValue;
+
+      setReceiveEventReminders(savedValue);
+      setPreferenceMessage(
+        savedValue
+          ? 'Recordatorios por correo activados'
+          : 'Recordatorios por correo desactivados'
+      );
+    } catch (error) {
+      setPreferenceMessage(
+        error instanceof Error
+          ? error.message
+          : 'No se pudo guardar la preferencia'
+      );
+    } finally {
+      setPreferenceLoading(false);
+    }
   };
 
   const displayName = getUserDisplayName(authState.email);
@@ -271,6 +337,38 @@ export default function Navbar() {
                             {authState.email ?? 'Usuario autenticado'}
                           </p>
                         </div>
+                      </div>
+
+                      <div className="border-b border-[var(--border-color)] py-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold text-[var(--text-primary)]">
+                              Recordatorios por correo
+                            </p>
+                            <p className="mt-1 text-xs leading-5 text-[var(--text-tertiary)]">
+                              Eventos marcados como importantes
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => void toggleEventReminders()}
+                            disabled={preferenceLoading}
+                            className={`rounded-full px-3 py-1 text-xs font-semibold transition disabled:opacity-60 ${
+                              receiveEventReminders
+                                ? 'bg-[var(--accent)] text-white'
+                                : 'bg-[var(--surface-muted)] text-[var(--text-secondary)]'
+                            }`}
+                          >
+                            {receiveEventReminders ? 'Activo' : 'Inactivo'}
+                          </button>
+                        </div>
+
+                        {preferenceMessage && (
+                          <p className="mt-3 text-xs text-[var(--text-secondary)]">
+                            {preferenceMessage}
+                          </p>
+                        )}
                       </div>
 
                       <div className="space-y-2 pt-4">

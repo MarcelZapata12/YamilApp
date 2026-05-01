@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['admin', 'usuario'],
     default: 'usuario'
+  },
+  receiveEventReminders: {
+    type: Boolean,
+    default: true
   }
 }, { timestamps: true });
 
