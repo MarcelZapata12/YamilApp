@@ -146,6 +146,9 @@ async function notifyImportantEvent(evento) {
   }).select('email');
 
   if (!users.length) {
+    console.warn(
+      'Recordatorio importante omitido: no hay usuarios con recordatorios activos'
+    );
     return;
   }
 
@@ -168,6 +171,19 @@ async function notifyImportantEvent(evento) {
   if (failed.length) {
     console.error(
       `No se pudieron enviar ${failed.length} recordatorio(s) de evento importante`
+    );
+
+    failed.slice(0, 3).forEach((result, index) => {
+      if (result.status === 'rejected') {
+        console.error(
+          `Detalle de error de Resend #${index + 1}:`,
+          result.reason instanceof Error ? result.reason.message : result.reason
+        );
+      }
+    });
+  } else {
+    console.log(
+      `Recordatorio importante enviado a ${users.length} usuario(s)`
     );
   }
 }
