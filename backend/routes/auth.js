@@ -23,7 +23,6 @@ function buildPublicUser(user) {
     _id: user._id,
     email: user.email,
     role: user.role,
-    receiveEventReminders: user.receiveEventReminders !== false,
     createdAt: user.createdAt
   };
 }
@@ -78,37 +77,10 @@ router.post('/register', async (req, res) => {
 router.get('/users', auth, role('admin'), async (req, res) => {
   try {
     const users = await User.find()
-      .select('email role receiveEventReminders createdAt')
+      .select('email role createdAt')
       .sort({ createdAt: -1, email: 1 });
 
     res.json(users.map(buildPublicUser));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// =======================
-// ACTUALIZAR PREFERENCIAS
-// =======================
-router.patch('/me/preferences', auth, async (req, res) => {
-  try {
-    const { receiveEventReminders } = req.body;
-
-    if (typeof receiveEventReminders !== 'boolean') {
-      return res.status(400).json({ error: 'Preferencia invalida' });
-    }
-
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { receiveEventReminders },
-      { new: true }
-    ).select('-password');
-
-    if (!user) {
-      return res.status(404).json({ error: 'Usuario no existe' });
-    }
-
-    res.json(buildPublicUser(user));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

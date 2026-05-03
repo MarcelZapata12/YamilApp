@@ -1,5 +1,4 @@
 const Evento = require('../models/Evento');
-const { notifyImportantEvent } = require('../utils/emailNotifications');
 
 function normalizeTipo(tipo) {
   const validTypes = new Set(['Legal', 'Economico', 'Otro']);
@@ -39,12 +38,6 @@ exports.crearEvento = async (req, res) => {
       msg: 'Evento creado',
       evento: saved
     });
-
-    if (saved.importante) {
-      notifyImportantEvent(saved).catch((error) => {
-        console.error('Error enviando recordatorio importante:', error.message);
-      });
-    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Error del servidor' });
@@ -70,7 +63,6 @@ exports.obtenerEventos = async (req, res) => {
 exports.editarEvento = async (req, res) => {
   try {
     const { titulo, fecha, tipo, importante, descripcion } = req.body;
-    const previousEvent = await Evento.findById(req.params.id).select('importante');
 
     const evento = await Evento.findByIdAndUpdate(
       req.params.id,
@@ -92,12 +84,6 @@ exports.editarEvento = async (req, res) => {
       msg: 'Evento actualizado',
       evento
     });
-
-    if (evento.importante && !previousEvent?.importante) {
-      notifyImportantEvent(evento).catch((error) => {
-        console.error('Error enviando recordatorio importante:', error.message);
-      });
-    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Error del servidor' });
