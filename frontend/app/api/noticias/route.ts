@@ -19,7 +19,7 @@ const COSTA_RICA_UTC_OFFSET_HOURS = 6;
 const DAILY_REFRESH_HOUR_CR = 6;
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const STALE_WHILE_REVALIDATE_SECONDS = 60 * 60;
-const NEWS_QUERY = 'Costa Rica derecho legal justicia tribunal ley abogado';
+const NEWS_QUERY = 'Costa Rica';
 
 let noticiasCache: {
   articles: Noticia[];
@@ -145,7 +145,6 @@ async function fetchProviderNews() {
   const searchParams = new URLSearchParams({
     q: NEWS_QUERY,
     lang: 'es',
-    country: 'cr',
     max: '10',
     apikey: NEWS_API_KEY ?? '',
   });
@@ -164,7 +163,15 @@ async function fetchProviderNews() {
     );
   }
 
-  return data?.articles ?? [];
+  const articles = (data?.articles ?? []).filter(
+    (article) => article.title && article.description && article.url
+  );
+
+  if (articles.length === 0) {
+    throw new Error('GNews respondio sin noticias disponibles');
+  }
+
+  return articles;
 }
 
 export async function GET() {

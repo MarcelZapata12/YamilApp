@@ -52,7 +52,11 @@ function readNoticiasCache(): NoticiasCache | null {
 
     const parsed = JSON.parse(rawValue) as Partial<NoticiasCache>;
 
-    if (!Array.isArray(parsed.articles) || typeof parsed.fetchedAt !== 'number') {
+    if (
+      !Array.isArray(parsed.articles) ||
+      parsed.articles.length === 0 ||
+      typeof parsed.fetchedAt !== 'number'
+    ) {
       return null;
     }
 
@@ -116,7 +120,10 @@ export default function Noticias() {
       setUltimaActualizacion(formatTimestamp(fetchedAt));
       setHoraActualizacion(refreshHour);
       setImagenesConError(new Set());
-      saveNoticiasCache({ articles, fetchedAt, refreshHour });
+
+      if (articles.length > 0) {
+        saveNoticiasCache({ articles, fetchedAt, refreshHour });
+      }
     } catch (requestError) {
       const cachedNews = readNoticiasCache();
 
@@ -171,7 +178,7 @@ export default function Noticias() {
         <div className="mx-auto accent-divider"></div>
 
         <p className="mb-4 mt-3 text-sm text-[var(--text-secondary)] md:text-base">
-          Actualidad legal y jurídica en Costa Rica.
+          Actualidad en el mundo.
         </p>
 
         {ultimaActualizacion && (
