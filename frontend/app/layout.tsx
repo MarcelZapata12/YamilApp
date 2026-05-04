@@ -1,4 +1,6 @@
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
+
 import Navbar from './components/navbar';
 import WhatsAppFloat from './components/whatsapp-float';
 
@@ -24,6 +26,7 @@ export default function RootLayout({
         <Navbar />
         <main>{children}</main>
         <WhatsAppFloat />
+        <Analytics />
       </body>
     </html>
   );
