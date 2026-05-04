@@ -10,16 +10,17 @@ const PORT = Number(process.env.PORT) || 5000;
 const defaultAllowedOrigins = [
   'http://localhost:3000',
   'https://yamilchacon.com',
-  'https://www.yamilchacon.com',
-  'https://yamil-app.vercel.app'
+  'https://www.yamilchacon.com'
 ];
+const localAllowedOrigins = FRONTEND_URL.split(',')
+  .map((origin) => origin.trim())
+  .filter(
+    (origin) =>
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://127.0.0.1:')
+  );
 const allowedOrigins = Array.from(
-  new Set(
-    FRONTEND_URL.split(',')
-      .map((origin) => origin.trim())
-      .filter(Boolean)
-      .concat(defaultAllowedOrigins)
-  )
+  new Set(defaultAllowedOrigins.concat(localAllowedOrigins))
 );
 
 function isAllowedOrigin(origin) {
