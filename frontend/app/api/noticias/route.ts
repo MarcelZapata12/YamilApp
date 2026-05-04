@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 type Noticia = {
   title: string;
@@ -14,24 +14,100 @@ type ProviderResponse = {
 
 const NEWS_API_KEY =
   process.env.GNEWS_API_KEY ?? process.env.NEXT_PUBLIC_NEWS_API;
-const CACHE_TTL_MS = 15 * 60 * 1000;
-const REFRESH_COOLDOWN_MS = 5 * 60 * 1000;
+const COSTA_RICA_TIME_ZONE = 'America/Costa_Rica';
+const COSTA_RICA_UTC_OFFSET_HOURS = 6;
+const DAILY_REFRESH_HOUR_CR = 6;
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+const STALE_WHILE_REVALIDATE_SECONDS = 60 * 60;
+const NEWS_QUERY = 'Costa Rica derecho legal justicia tribunal ley abogado';
 
 let noticiasCache: {
   articles: Noticia[];
   fetchedAt: number;
+  refreshKey: string;
+  nextRefreshAt: number;
 } | null = null;
 
-let inFlightRequest: Promise<Noticia[]> | null = null;
+let inFlightRequest: {
+  refreshKey: string;
+  promise: Promise<Noticia[]>;
+} | null = null;
 
 function hasCachedArticles() {
   return Boolean(noticiasCache?.articles.length);
 }
 
-function isCacheFresh(now: number) {
-  return Boolean(
-    noticiasCache && now - noticiasCache.fetchedAt < CACHE_TTL_MS
+function getCostaRicaDateParts(now = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: COSTA_RICA_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(now);
+
+  return Object.fromEntries(
+    parts
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, Number(part.value)])
+  ) as Record<'year' | 'month' | 'day' | 'hour', number>;
+}
+
+function getCostaRicaRefreshUtcMs(
+  year: number,
+  month: number,
+  day: number
+) {
+  return Date.UTC(
+    year,
+    month - 1,
+    day,
+    DAILY_REFRESH_HOUR_CR + COSTA_RICA_UTC_OFFSET_HOURS
   );
+}
+
+function formatDateKeyFromUtcMs(value: number) {
+  const date = new Date(value);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function getDailyRefreshWindow(now = new Date()) {
+  const { year, month, day, hour } = getCostaRicaDateParts(now);
+  const todayRefreshAt = getCostaRicaRefreshUtcMs(year, month, day);
+  const refreshAt =
+    hour < DAILY_REFRESH_HOUR_CR
+      ? todayRefreshAt - ONE_DAY_MS
+      : todayRefreshAt;
+
+  return {
+    refreshKey: formatDateKeyFromUtcMs(refreshAt),
+    nextRefreshAt: refreshAt + ONE_DAY_MS,
+  };
+}
+
+function getCacheControlHeader(nextRefreshAt: number) {
+  const secondsUntilNextRefresh = Math.max(
+    60,
+    Math.ceil((nextRefreshAt - Date.now()) / 1000)
+  );
+
+  return `public, s-maxage=${secondsUntilNextRefresh}, stale-while-revalidate=${STALE_WHILE_REVALIDATE_SECONDS}`;
+}
+
+function buildNewsResponse(
+  payload: Record<string, unknown>,
+  nextRefreshAt: number
+) {
+  return NextResponse.json(payload, {
+    headers: {
+      'Cache-Control': getCacheControlHeader(nextRefreshAt),
+    },
+  });
 }
 
 function getProviderErrorMessage(data: ProviderResponse | null) {
@@ -51,7 +127,7 @@ function getPublicErrorMessage(error: unknown) {
     error instanceof Error &&
     /too many requests|blocked because|429/i.test(error.message)
   ) {
-    return 'El proveedor de noticias está temporalmente limitado. Intenta de nuevo en unos minutos.';
+    return 'El proveedor de noticias esta temporalmente limitado. Intenta de nuevo en unos minutos.';
   }
 
   if (error instanceof Error && /request limit|quota|403/i.test(error.message)) {
@@ -66,8 +142,16 @@ function getPublicErrorMessage(error: unknown) {
 }
 
 async function fetchProviderNews() {
+  const searchParams = new URLSearchParams({
+    q: NEWS_QUERY,
+    lang: 'es',
+    country: 'cr',
+    max: '10',
+    apikey: NEWS_API_KEY ?? '',
+  });
+
   const response = await fetch(
-    `https://gnews.io/api/v4/search?q=Costa%20Rica&lang=es&max=10&apikey=${NEWS_API_KEY}`,
+    `https://gnews.io/api/v4/search?${searchParams.toString()}`,
     { cache: 'no-store' }
   );
 
@@ -75,14 +159,15 @@ async function fetchProviderNews() {
 
   if (!response.ok) {
     throw new Error(
-      getProviderErrorMessage(data) ?? `GNews respondio con estado ${response.status}`
+      getProviderErrorMessage(data) ??
+        `GNews respondio con estado ${response.status}`
     );
   }
 
   return data?.articles ?? [];
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   if (!NEWS_API_KEY) {
     return NextResponse.json(
       { error: 'Falta configurar la API de noticias' },
@@ -90,33 +175,32 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const now = Date.now();
-  const forceRefresh = request.nextUrl.searchParams.get('refresh') === '1';
+  const { refreshKey, nextRefreshAt } = getDailyRefreshWindow();
 
-  if (!forceRefresh && isCacheFresh(now) && noticiasCache) {
-    return NextResponse.json({
-      articles: noticiasCache.articles,
-      cached: true,
-      fetchedAt: noticiasCache.fetchedAt,
-    });
+  if (noticiasCache?.refreshKey === refreshKey) {
+    return buildNewsResponse(
+      {
+        articles: noticiasCache.articles,
+        cached: true,
+        fetchedAt: noticiasCache.fetchedAt,
+        nextRefreshAt,
+        refreshHour: DAILY_REFRESH_HOUR_CR,
+      },
+      nextRefreshAt
+    );
   }
 
-  if (
-    forceRefresh &&
-    noticiasCache &&
-    now - noticiasCache.fetchedAt < REFRESH_COOLDOWN_MS
-  ) {
-    return NextResponse.json({
-      articles: noticiasCache.articles,
-      cached: true,
-      fetchedAt: noticiasCache.fetchedAt,
-      warning:
-        'Se muestran noticias recientes para evitar el límite del proveedor.',
-    });
-  }
+  const currentRequest =
+    inFlightRequest?.refreshKey === refreshKey
+      ? inFlightRequest.promise
+      : fetchProviderNews();
 
-  const currentRequest = inFlightRequest ?? fetchProviderNews();
-  inFlightRequest = currentRequest;
+  if (inFlightRequest?.refreshKey !== refreshKey) {
+    inFlightRequest = {
+      refreshKey,
+      promise: currentRequest,
+    };
+  }
 
   try {
     const articles = await currentRequest;
@@ -124,23 +208,35 @@ export async function GET(request: NextRequest) {
     noticiasCache = {
       articles,
       fetchedAt: Date.now(),
+      refreshKey,
+      nextRefreshAt,
     };
 
-    return NextResponse.json({
-      articles,
-      cached: false,
-      fetchedAt: noticiasCache.fetchedAt,
-    });
+    return buildNewsResponse(
+      {
+        articles,
+        cached: false,
+        fetchedAt: noticiasCache.fetchedAt,
+        nextRefreshAt,
+        refreshHour: DAILY_REFRESH_HOUR_CR,
+      },
+      nextRefreshAt
+    );
   } catch (error) {
     if (hasCachedArticles() && noticiasCache) {
-      return NextResponse.json({
-        articles: noticiasCache.articles,
-        cached: true,
-        stale: true,
-        fetchedAt: noticiasCache.fetchedAt,
-        warning:
-          'Mostrando noticias guardadas porque el proveedor limitó temporalmente las solicitudes.',
-      });
+      return buildNewsResponse(
+        {
+          articles: noticiasCache.articles,
+          cached: true,
+          stale: true,
+          fetchedAt: noticiasCache.fetchedAt,
+          nextRefreshAt: noticiasCache.nextRefreshAt,
+          refreshHour: DAILY_REFRESH_HOUR_CR,
+          warning:
+            'Mostrando noticias guardadas porque el proveedor limito temporalmente las solicitudes.',
+        },
+        noticiasCache.nextRefreshAt
+      );
     }
 
     return NextResponse.json(
@@ -150,7 +246,7 @@ export async function GET(request: NextRequest) {
       { status: 429 }
     );
   } finally {
-    if (inFlightRequest === currentRequest) {
+    if (inFlightRequest?.promise === currentRequest) {
       inFlightRequest = null;
     }
   }
