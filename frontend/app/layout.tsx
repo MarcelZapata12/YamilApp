@@ -1,5 +1,6 @@
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 import Navbar from './components/navbar';
 import WhatsAppFloat from './components/whatsapp-float';
@@ -27,6 +28,7 @@ export default function RootLayout({
         <main>{children}</main>
         <WhatsAppFloat />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
