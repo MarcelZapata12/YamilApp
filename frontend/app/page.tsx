@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import Inicio from './inicio/page';
 
 export default function Home() {
-  redirect('/inicio');
+  return <Inicio />;
 }
