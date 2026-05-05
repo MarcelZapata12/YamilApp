@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { type FormEvent, useState } from 'react';
 
 import { apiUrl, getErrorMessage, getResponseMessage } from '../api-client';
@@ -31,10 +32,13 @@ export default function Register() {
         );
       }
 
-      setMessage('Cuenta creada correctamente');
-      window.setTimeout(() => {
-        window.location.href = '/login';
-      }, 700);
+      setMessage(
+        await getResponseMessage(
+          res,
+          'Cuenta creada. Revisa tu correo para verificarla antes de iniciar sesion.'
+        )
+      );
+      setPassword('');
     } catch (requestError) {
       setError(getErrorMessage(requestError, 'No se pudo crear la cuenta'));
     } finally {
@@ -51,7 +55,7 @@ export default function Register() {
           <div className="mx-auto my-3 accent-divider"></div>
 
           <p className="text-sm text-[var(--text-secondary)]">
-            Los nuevos registros se crean como usuario.
+            Los nuevos registros deben verificar su correo.
           </p>
         </div>
 
@@ -68,16 +72,18 @@ export default function Register() {
         <form onSubmit={register} className="space-y-4">
           <input
             type="email"
-            placeholder="Correo electrónico"
+            placeholder="Correo electronico"
             className="input-field"
+            value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
           />
 
           <input
             type="password"
-            placeholder="Contraseña"
+            placeholder="Contrasena"
             className="input-field"
+            value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
           />
@@ -90,6 +96,15 @@ export default function Register() {
             {loading ? 'Creando cuenta...' : 'Registrarse'}
           </button>
         </form>
+
+        {message && (
+          <Link
+            href="/login"
+            className="secondary-button mt-4 w-full text-center"
+          >
+            Ir a iniciar sesion
+          </Link>
+        )}
       </div>
     </main>
   );

@@ -45,6 +45,7 @@ type CuentaAdmin = {
   email: string;
   role: 'admin' | 'usuario';
   createdAt?: string;
+  emailVerified?: boolean;
 };
 
 type AdminView = 'panel' | 'portada' | 'documentos' | 'libros' | 'cuentas';
@@ -610,9 +611,22 @@ export default function Admin() {
                     </p>
                   </div>
 
-                  <span className="w-fit rounded-full bg-[var(--surface-muted)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
-                    {cuenta.role === 'admin' ? 'Administrador' : 'Usuario'}
-                  </span>
+                  <div className="flex flex-wrap gap-2 md:justify-end">
+                    <span className="w-fit rounded-full bg-[var(--surface-muted)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
+                      {cuenta.role === 'admin' ? 'Administrador' : 'Usuario'}
+                    </span>
+                    <span
+                      className={`w-fit rounded-full bg-[var(--surface-muted)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] ${
+                        cuenta.emailVerified === false
+                          ? 'status-error'
+                          : 'status-success'
+                      }`}
+                    >
+                      {cuenta.emailVerified === false
+                        ? 'Pendiente'
+                        : 'Verificado'}
+                    </span>
+                  </div>
                 </div>
               ))}
 

@@ -26,7 +26,10 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [resendingVerification, setResendingVerification] = useState(false);
 
   useEffect(() => {
     if (!authState.isLogged) {
@@ -39,6 +42,7 @@ export default function Login() {
   const login = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+    setMessage('');
 
     try {
       setLoading(true);
@@ -51,14 +55,14 @@ export default function Login() {
 
       if (!res.ok) {
         throw new Error(
-          await getResponseMessage(res, 'No se pudo iniciar sesión')
+          await getResponseMessage(res, 'No se pudo iniciar sesion')
         );
       }
 
       const data = (await res.json()) as LoginResponse;
 
       if (!data.token) {
-        throw new Error('Respuesta inválida del servidor');
+        throw new Error('Respuesta invalida del servidor');
       }
 
       persistAuthSession({
@@ -67,9 +71,74 @@ export default function Login() {
       });
       router.replace('/documentos');
     } catch (requestError) {
-      setError(getErrorMessage(requestError, 'No se pudo iniciar sesión'));
+      setError(getErrorMessage(requestError, 'No se pudo iniciar sesion'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const requestPasswordReset = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+
+    try {
+      setLoading(true);
+
+      const res = await fetch(apiUrl('/api/auth/forgot-password'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          await getResponseMessage(res, 'No se pudo enviar el enlace')
+        );
+      }
+
+      setMessage(
+        await getResponseMessage(
+          res,
+          'Si el correo existe, recibiras un enlace para restablecer la contrasena.'
+        )
+      );
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, 'No se pudo enviar el enlace'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resendVerification = async () => {
+    setError('');
+    setMessage('');
+
+    try {
+      setResendingVerification(true);
+
+      const res = await fetch(apiUrl('/api/auth/resend-verification'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          await getResponseMessage(res, 'No se pudo reenviar el correo')
+        );
+      }
+
+      setMessage(
+        await getResponseMessage(
+          res,
+          'Si la cuenta esta pendiente, se enviara un nuevo enlace.'
+        )
+      );
+    } catch (requestError) {
+      setError(getErrorMessage(requestError, 'No se pudo reenviar el correo'));
+    } finally {
+      setResendingVerification(false);
     }
   };
 
@@ -82,39 +151,84 @@ export default function Login() {
           <div className="mx-auto my-3 accent-divider"></div>
 
           <p className="text-sm text-[var(--text-secondary)]">
-            Plataforma de documentos legales
+            {forgotMode
+              ? 'Recuperacion de acceso'
+              : 'Plataforma de documentos legales'}
           </p>
         </div>
+
+        {message && (
+          <div className="mb-4 text-center text-sm status-success">
+            {message}
+          </div>
+        )}
 
         {error && (
           <div className="mb-4 text-center text-sm status-error">{error}</div>
         )}
 
-        <form onSubmit={login} className="space-y-4">
+        <form
+          onSubmit={forgotMode ? requestPasswordReset : login}
+          className="space-y-4"
+        >
           <input
             type="email"
-            placeholder="Correo electrónico"
+            placeholder="Correo electronico"
             className="input-field"
+            value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
           />
 
-          <input
-            type="password"
-            placeholder="Contraseña"
-            className="input-field"
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
+          {!forgotMode && (
+            <input
+              type="password"
+              placeholder="Contrasena"
+              className="input-field"
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          )}
 
           <button
             type="submit"
             disabled={loading}
             className="primary-button w-full disabled:opacity-60"
           >
-            {loading ? 'Ingresando...' : 'Ingresar'}
+            {forgotMode
+              ? loading
+                ? 'Enviando...'
+                : 'Enviar enlace de recuperacion'
+              : loading
+                ? 'Ingresando...'
+                : 'Ingresar'}
           </button>
         </form>
+
+        {!forgotMode && error.toLowerCase().includes('verificar') && (
+          <button
+            type="button"
+            onClick={() => void resendVerification()}
+            disabled={resendingVerification || !email}
+            className="secondary-button mt-4 w-full disabled:opacity-60"
+          >
+            {resendingVerification
+              ? 'Reenviando...'
+              : 'Reenviar correo de verificacion'}
+          </button>
+        )}
+
+        <button
+          type="button"
+          onClick={() => {
+            setForgotMode((current) => !current);
+            setError('');
+            setMessage('');
+          }}
+          className="mt-5 w-full text-center text-sm font-semibold text-[var(--accent)]"
+        >
+          {forgotMode ? 'Volver a iniciar sesion' : 'Olvide mi contrasena'}
+        </button>
 
         <p className="mt-6 text-center text-xs text-[var(--text-secondary)]">
           Acceso exclusivo para usuarios autorizados
