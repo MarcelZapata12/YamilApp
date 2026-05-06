@@ -114,7 +114,7 @@ export default function Navbar() {
           setStoredUserEmail(data.email);
         }
       } catch {
-        // Si falla esta carga secundaria, mantenemos la sesión actual y el fallback visual.
+        // Si esta consulta falla, conservamos la sesion local.
       }
     };
 
@@ -138,28 +138,31 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-[var(--border-color)] bg-[var(--surface-overlay)] backdrop-blur-xl">
-      <div className="mx-auto max-w-7xl px-4 py-4 lg:px-10">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <Link href="/inicio" className="group relative flex items-center">
+      <div className="mx-auto max-w-7xl px-4 py-3 sm:py-4 lg:px-10">
+        <div className="flex flex-col gap-3 sm:gap-4">
+          <div className="flex items-start justify-between gap-3 sm:items-center">
+            <Link
+              href="/inicio"
+              className="group relative flex shrink-0 items-center"
+            >
               <Image
                 src="/logoNuevo.png"
                 alt="Logo"
                 width={220}
                 height={220}
-                className="h-14 w-auto object-contain transition duration-300 group-hover:scale-105 sm:h-20 lg:h-28"
+                className="h-12 w-auto object-contain transition duration-300 group-hover:scale-105 sm:h-20 lg:h-28"
                 priority
               />
               <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
-            <div className="flex flex-wrap items-center justify-end gap-3">
+            <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={toggleThemeMode}
                 aria-label={nextThemeLabel}
                 title={nextThemeLabel}
-                className="flex items-center gap-3 rounded-full border border-[var(--border-color)] bg-[var(--surface-strong)] px-3 py-2 text-sm font-medium text-[var(--text-primary)] shadow-sm hover:border-[var(--accent)]"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-strong)] p-1 text-sm font-medium text-[var(--text-primary)] shadow-sm hover:border-[var(--accent)] sm:h-auto sm:w-auto sm:gap-3 sm:px-3 sm:py-2"
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--surface-muted)] text-[var(--accent)] sm:h-10 sm:w-10">
                   {themeMode === 'dark' ? (
@@ -204,14 +207,14 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/login"
-                    className="secondary-button px-4 py-2 text-sm"
+                    className="secondary-button whitespace-nowrap px-3 py-2 text-xs sm:px-4 sm:text-sm"
                   >
                     Iniciar sesión
                   </Link>
 
                   <Link
                     href="/register"
-                    className="primary-button px-4 py-2 text-sm"
+                    className="primary-button whitespace-nowrap px-3 py-2 text-xs sm:px-4 sm:text-sm"
                   >
                     Crear cuenta
                   </Link>
@@ -297,12 +300,12 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-5 text-base font-semibold text-[var(--text-secondary)] lg:gap-7">
+          <div className="-mx-4 flex items-center gap-5 overflow-x-auto px-4 pb-1 text-sm font-semibold text-[var(--text-secondary)] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:text-base lg:gap-7 [&::-webkit-scrollbar]:hidden">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`rounded-xl px-1 py-2 transition md:px-2 ${
+                className={`shrink-0 whitespace-nowrap rounded-xl px-1 py-2 transition md:px-2 ${
                   pathname === link.href
                     ? 'text-[var(--accent)] underline underline-offset-4'
                     : 'hover:text-[var(--accent)]'
@@ -315,7 +318,7 @@ export default function Navbar() {
             {authState.isAdmin && (
               <Link
                 href="/admin"
-                className={`rounded-xl px-1 py-2 transition md:px-2 ${
+                className={`shrink-0 whitespace-nowrap rounded-xl px-1 py-2 transition md:px-2 ${
                   pathname === '/admin'
                     ? 'text-[var(--accent)] underline underline-offset-4'
                     : 'hover:text-[var(--accent)]'

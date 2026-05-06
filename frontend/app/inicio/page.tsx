@@ -192,40 +192,43 @@ export default function Inicio() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(250,247,242,0.88)_0%,rgba(250,247,242,0.72)_34%,rgba(250,247,242,0.26)_60%,rgba(250,247,242,0.04)_100%)]"></div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0.08)_100%)]"></div>
 
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[1fr_0.88fr] lg:items-center lg:py-20">
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-12 sm:py-16 lg:grid-cols-[1fr_0.88fr] lg:items-center lg:py-20">
           <div className="max-w-3xl text-[#171717]">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#d2ad62]">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-[#d2ad62] sm:text-sm sm:tracking-[0.35em]">
               Derecho y Sociedad
             </p>
 
             <p
-              className="mb-4 text-3xl text-[#d2ad62] md:text-4xl"
+              className="mb-4 text-3xl text-[#d2ad62] sm:text-4xl"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
               Yamil Chacon
             </p>
 
             <h1
-              className="max-w-4xl text-5xl font-semibold leading-[0.98] md:text-7xl"
+              className="max-w-4xl text-4xl font-semibold leading-[1.04] sm:text-5xl md:text-7xl md:leading-[0.98]"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
               Abogado y asesor legal en Costa Rica
             </h1>
 
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#3f3a32] md:text-lg">
+            <p className="mt-6 max-w-2xl text-sm leading-relaxed text-[#3f3a32] sm:text-base md:text-lg">
               Brindamos asesoría jurídica estratégica, acompañamiento técnico y
               lectura normativa, con un enfoque serio, cercano y profesional
               para procesos legales, análisis legislativo y toma de decisiones.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/about" className="primary-button px-7 py-4 text-base">
+            <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
+              <Link
+                href="/about"
+                className="primary-button px-5 py-3 text-sm sm:px-7 sm:py-4 sm:text-base"
+              >
                 Ver acerca del abogado
               </Link>
 
               <Link
                 href="/documentos"
-                className="secondary-button border-[#c9aa6b] px-7 py-4 text-base text-[#7d6230] hover:border-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
+                className="secondary-button border-[#c9aa6b] px-5 py-3 text-sm text-[#7d6230] hover:border-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)] sm:px-7 sm:py-4 sm:text-base"
               >
                 Explorar documentos
               </Link>

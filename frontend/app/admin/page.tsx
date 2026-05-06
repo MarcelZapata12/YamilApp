@@ -650,7 +650,7 @@ export default function Admin() {
         </h1>
         <div className="mx-auto accent-divider"></div>
         <p className="mt-3 text-sm text-[var(--text-secondary)] md:text-base">
-          Gestión de portada, documentos y recomendaciones de lectura.
+          Gestion de contenido, documentos y cuentas del sitio.
         </p>
       </section>
 
@@ -674,9 +674,9 @@ export default function Admin() {
                 <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
                   Inicio
                 </p>
-                <h2 className="text-2xl font-semibold">Portada del inicio</h2>
+                <h2 className="text-2xl font-semibold">Imagen de inicio</h2>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                  Cambia la imagen principal que aparece en el inicio.
+                  Actualiza la imagen principal de la pagina de inicio.
                 </p>
               </div>
               <button
@@ -731,7 +731,7 @@ export default function Admin() {
                 <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
                   Acceso
                 </p>
-                <h2 className="text-2xl font-semibold">Cuentas creadas</h2>
+                <h2 className="text-2xl font-semibold">Usuarios</h2>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
                   Revisa los usuarios registrados con acceso al sistema.
                 </p>
@@ -754,15 +754,14 @@ export default function Admin() {
         >
           <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="text-xl font-semibold">Portada del inicio</h2>
+              <h2 className="text-xl font-semibold">Imagen de inicio</h2>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                Aquí puedes cambiar la imagen difuminada que aparece detrás del
-                hero principal del inicio.
+                Cambia la imagen de fondo que acompana la presentacion principal.
               </p>
             </div>
 
             <span className="rounded-full bg-[var(--surface-muted)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
-              Hero editable
+              Portada
             </span>
           </div>
 
@@ -825,12 +824,11 @@ export default function Admin() {
                   className="mt-4 max-w-md text-4xl font-semibold leading-none md:text-5xl"
                   style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
                 >
-                  Hero de inicio
+                  Vista de inicio
                 </h3>
                 <p className="mt-4 max-w-md text-sm leading-relaxed text-[#4a4337]">
-                  El fondo conservará su color original con un desenfoque suave
-                  para acompañar el hero sin quitar protagonismo al contenido
-                  principal.
+                  La imagen se muestra con un desenfoque suave para mantener la
+                  lectura clara sobre la portada.
                 </p>
               </div>
             </div>
@@ -840,8 +838,7 @@ export default function Admin() {
                 <div className="overflow-hidden rounded-[1.75rem] border border-[var(--border-color)] bg-[var(--surface-strong)] p-4">
                   <p className="text-sm font-medium">Imagen actual cargada</p>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                    Aquí debes poder verla claramente aunque la portada final la
-                    use de forma difuminada.
+                    Esta es la imagen que se usara como fondo en el inicio.
                   </p>
 
                   <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-[1.25rem] bg-[var(--surface-muted)]">
