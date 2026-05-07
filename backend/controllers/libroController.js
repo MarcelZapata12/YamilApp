@@ -24,7 +24,7 @@ exports.crearLibro = async (req, res) => {
 
     if (!titulo?.trim() || !descripcion?.trim() || !enlaceCompra?.trim()) {
       return res.status(400).json({
-        msg: 'Titulo, descripcion y enlace de compra son obligatorios'
+        msg: 'Título, descripción y enlace de compra son obligatorios'
       });
     }
 
@@ -34,7 +34,7 @@ exports.crearLibro = async (req, res) => {
       enlaceNormalizado = normalizePurchaseUrl(enlaceCompra);
     } catch (error) {
       return res.status(400).json({
-        msg: 'El enlace de compra no es valido'
+        msg: 'El enlace de compra no es válido'
       });
     }
 

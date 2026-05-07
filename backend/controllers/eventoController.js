@@ -21,7 +21,7 @@ exports.crearEvento = async (req, res) => {
     const { titulo, fecha, tipo, importante, descripcion } = req.body;
 
     if (!titulo || !fecha) {
-      return res.status(400).json({ msg: 'Titulo y fecha son obligatorios' });
+      return res.status(400).json({ msg: 'Título y fecha son obligatorios' });
     }
 
     const nuevo = new Evento({

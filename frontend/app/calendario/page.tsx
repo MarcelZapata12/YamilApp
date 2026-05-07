@@ -374,15 +374,15 @@ export default function Calendario() {
             <div className="accent-divider mb-5"></div>
 
             <p className="max-w-2xl text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
-              Organiza fechas juridicas, hitos economicos y eventos clave en un
-              solo espacio. Los eventos marcados como importantes tambien se
+              Organiza fechas jurídicas, hitos económicos y eventos clave en un
+              solo espacio. Los eventos marcados como importantes también se
               muestran como recordatorios en el inicio.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
               {[
                 { label: 'Legal', color: '#c8a96a' },
-                { label: 'Economico', color: '#1f9d69' },
+                { label: 'Económico', color: '#1f9d69' },
                 { label: 'Otro', color: '#7a5d35' },
                 { label: 'Feriado CR', color: '#dc2626' },
               ].map((item) => (
@@ -443,7 +443,7 @@ export default function Calendario() {
                 <div>
                   <p className="text-sm font-semibold">Recordatorio destacado</p>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                    Se refleja tambien en la portada
+                    Se refleja también en la portada
                   </p>
                 </div>
                 <span className="rounded-full bg-[var(--surface-muted)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
@@ -463,7 +463,7 @@ export default function Calendario() {
                 </div>
               ) : (
                 <p className="mt-4 text-sm text-[var(--text-secondary)]">
-                  Todavia no hay eventos marcados como importantes.
+                  Todavía no hay eventos marcados como importantes.
                 </p>
               )}
             </div>
@@ -510,7 +510,7 @@ export default function Calendario() {
                 ) : (
                   <div className="soft-surface rounded-2xl p-4 text-sm text-[var(--text-secondary)]">
                     Cuando el administrador marque un evento como importante,
-                    aparecera aqui y en inicio.
+                    aparecerá aquí y en inicio.
                   </div>
                 )}
               </div>
@@ -548,7 +548,7 @@ export default function Calendario() {
               </p>
               <h2 className="mt-3 text-2xl font-semibold">
                 {editando
-                  ? 'Actualiza la informacion del evento'
+                  ? 'Actualiza la información del evento'
                   : 'Programa un nuevo evento'}
               </h2>
             </div>
@@ -556,7 +556,7 @@ export default function Calendario() {
             <form onSubmit={guardarEvento} className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium">
-                  Titulo del evento
+                  Título del evento
                 </label>
                 <input
                   className="input-field"
@@ -587,7 +587,7 @@ export default function Calendario() {
                     onChange={(event) => setTipo(event.target.value as EventoTipo)}
                   >
                     <option value="Legal">Legal</option>
-                    <option value="Economico">Economico</option>
+                    <option value="Economico">Económico</option>
                     <option value="Otro">Otro</option>
                   </select>
                 </div>
@@ -595,13 +595,13 @@ export default function Calendario() {
 
               <div>
                 <label className="mb-2 block text-sm font-medium">
-                  Descripcion breve
+                  Descripción breve
                 </label>
                 <textarea
                   className="textarea-field min-h-28"
                   value={descripcion}
                   onChange={(event) => setDescripcion(event.target.value)}
-                  placeholder="Agrega detalles que se mostraran al abrir el evento"
+                  placeholder="Agrega detalles que se mostrarán al abrir el evento"
                 />
               </div>
 
@@ -615,10 +615,10 @@ export default function Calendario() {
 
                 <span>
                   <span className="block font-medium">
-                    Mostrar tambien como recordatorio en inicio
+                    Mostrar también como recordatorio en inicio
                   </span>
                   <span className="mt-1 block text-sm text-[var(--text-secondary)]">
-                    Utiliza esta opcion para destacar fechas que el usuario deba
+                    Utiliza esta opción para destacar fechas que el usuario deba
                     tener presentes apenas entre al sitio.
                   </span>
                 </span>
@@ -689,10 +689,10 @@ export default function Calendario() {
             </div>
 
             <div className="mt-4 rounded-2xl border border-[var(--border-color)] bg-[var(--surface-strong)] p-4">
-              <p className="text-sm text-[var(--text-tertiary)]">Descripcion</p>
+              <p className="text-sm text-[var(--text-tertiary)]">Descripción</p>
               <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[var(--text-secondary)]">
                 {selectedEvent.descripcion?.trim() ||
-                  'No hay descripcion adicional para este evento.'}
+                  'No hay descripción adicional para este evento.'}
               </p>
             </div>
 

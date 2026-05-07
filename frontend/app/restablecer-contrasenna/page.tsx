@@ -23,12 +23,12 @@ export default function RestablecerContrasenna() {
     setMessage('');
 
     if (!token) {
-      setError('El enlace no tiene token de recuperacion.');
+      setError('El enlace no tiene token de recuperación.');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Las contrasenas no coinciden.');
+      setError('Las contraseñas no coinciden.');
       return;
     }
 
@@ -43,18 +43,18 @@ export default function RestablecerContrasenna() {
 
       if (!res.ok) {
         throw new Error(
-          await getResponseMessage(res, 'No se pudo actualizar la contrasena')
+          await getResponseMessage(res, 'No se pudo actualizar la contraseña')
         );
       }
 
       setMessage(
-        await getResponseMessage(res, 'Contrasena actualizada correctamente')
+        await getResponseMessage(res, 'Contraseña actualizada correctamente')
       );
       setPassword('');
       setConfirmPassword('');
     } catch (requestError) {
       setError(
-        getErrorMessage(requestError, 'No se pudo actualizar la contrasena')
+        getErrorMessage(requestError, 'No se pudo actualizar la contraseña')
       );
     } finally {
       setLoading(false);
@@ -66,13 +66,13 @@ export default function RestablecerContrasenna() {
       <div className="panel-surface w-full max-w-md rounded-[2rem] p-8">
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold tracking-wide">
-            Nueva contrasena
+            Nueva contraseña
           </h1>
 
           <div className="mx-auto my-3 accent-divider"></div>
 
           <p className="text-sm text-[var(--text-secondary)]">
-            Define una nueva contrasena para tu cuenta.
+            Define una nueva contraseña para tu cuenta.
           </p>
         </div>
 
@@ -90,7 +90,7 @@ export default function RestablecerContrasenna() {
           <form onSubmit={resetPassword} className="space-y-4">
             <input
               type="password"
-              placeholder="Nueva contrasena"
+              placeholder="Nueva contraseña"
               className="input-field"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -99,7 +99,7 @@ export default function RestablecerContrasenna() {
 
             <input
               type="password"
-              placeholder="Confirmar contrasena"
+              placeholder="Confirmar contraseña"
               className="input-field"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
@@ -111,12 +111,12 @@ export default function RestablecerContrasenna() {
               disabled={loading}
               className="primary-button w-full disabled:opacity-60"
             >
-              {loading ? 'Actualizando...' : 'Actualizar contrasena'}
+              {loading ? 'Actualizando...' : 'Actualizar contraseña'}
             </button>
           </form>
         ) : (
           <Link href="/login" className="primary-button w-full">
-            Ir a iniciar sesion
+            Ir a iniciar sesión
           </Link>
         )}
       </div>

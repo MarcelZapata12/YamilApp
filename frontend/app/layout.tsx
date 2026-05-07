@@ -7,9 +7,9 @@ import Navbar from './components/navbar';
 import WhatsAppFloat from './components/whatsapp-float';
 
 const siteUrl = 'https://yamilchacon.com';
-const siteTitle = 'Bradly Yamil Chacon Murillo | Derecho y Sociedad';
+const siteTitle = 'Bradly Yamil Chacón Murillo | Derecho y Sociedad';
 const siteDescription =
-  'Asesoria en tecnica legislativa, calidad normativa, proyectos de ley, capacitacion parlamentaria, docencia universitaria y analisis de politicas publicas en Costa Rica.';
+  'Asesoría en técnica legislativa, calidad normativa, proyectos de ley, capacitación parlamentaria, docencia universitaria y análisis de políticas públicas en Costa Rica.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -19,20 +19,20 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   applicationName: 'Derecho y Sociedad',
-  authors: [{ name: 'Bradly Yamil Chacon Murillo' }],
-  creator: 'Bradly Yamil Chacon Murillo',
+  authors: [{ name: 'Bradly Yamil Chacón Murillo' }],
+  creator: 'Bradly Yamil Chacón Murillo',
   publisher: 'Derecho y Sociedad',
   keywords: [
     'abogado Costa Rica',
-    'asesoria legal Costa Rica',
-    'tecnica legislativa',
+    'asesoría legal Costa Rica',
+    'técnica legislativa',
     'calidad normativa',
     'proyectos de ley',
-    'capacitacion parlamentaria',
+    'capacitación parlamentaria',
     'derecho agrario',
-    'recurso hidrico',
+    'recurso hídrico',
     'derecho ambiental',
-    'politicas publicas',
+    'políticas públicas',
     'fortalecimiento institucional',
     'docencia universitaria',
   ],
@@ -75,7 +75,7 @@ const legalServiceStructuredData = {
   '@context': 'https://schema.org',
   '@type': 'LegalService',
   '@id': `${siteUrl}/#legalservice`,
-  name: 'Bradly Yamil Chacon Murillo - Derecho y Sociedad',
+  name: 'Bradly Yamil Chacón Murillo - Derecho y Sociedad',
   alternateName: 'Derecho y Sociedad',
   url: siteUrl,
   logo: `${siteUrl}/logoNuevo.png`,
@@ -100,12 +100,12 @@ const legalServiceStructuredData = {
   },
   sameAs: ['https://wa.me/50687042194'],
   serviceType: [
-    'Asesoria en tecnica legislativa y calidad normativa',
+    'Asesoría en técnica legislativa y calidad normativa',
     'Docencia universitaria',
-    'Elaboracion y revision de proyectos de ley',
-    'Capacitacion parlamentaria',
-    'Capacitacion en materia agraria, recurso hidrico y ambiente',
-    'Analisis de politicas publicas en seguridad',
+    'Elaboración y revisión de proyectos de ley',
+    'Capacitación parlamentaria',
+    'Capacitación en materia agraria, recurso hídrico y ambiente',
+    'Análisis de políticas públicas en seguridad',
     'Fortalecimiento institucional',
   ],
 };

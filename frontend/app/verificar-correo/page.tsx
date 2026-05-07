@@ -16,7 +16,7 @@ export default function VerificarCorreo() {
 
     if (!token) {
       setStatus('error');
-      setMessage('El enlace no tiene token de verificacion.');
+      setMessage('El enlace no tiene token de verificación.');
       return;
     }
 
@@ -52,7 +52,7 @@ export default function VerificarCorreo() {
     <main className="page-shell flex items-center justify-center px-6 py-16">
       <div className="panel-surface w-full max-w-md rounded-[2rem] p-8 text-center">
         <h1 className="text-2xl font-bold tracking-wide">
-          Verificacion de correo
+          Verificación de correo
         </h1>
         <div className="mx-auto my-3 accent-divider"></div>
         <p
@@ -65,7 +65,7 @@ export default function VerificarCorreo() {
 
         {status !== 'loading' && (
           <Link href="/login" className="primary-button mt-6 w-full">
-            Ir a iniciar sesion
+            Ir a iniciar sesión
           </Link>
         )}
       </div>

@@ -55,14 +55,14 @@ export default function Login() {
 
       if (!res.ok) {
         throw new Error(
-          await getResponseMessage(res, 'No se pudo iniciar sesion')
+          await getResponseMessage(res, 'No se pudo iniciar sesión')
         );
       }
 
       const data = (await res.json()) as LoginResponse;
 
       if (!data.token) {
-        throw new Error('Respuesta invalida del servidor');
+        throw new Error('Respuesta inválida del servidor');
       }
 
       persistAuthSession({
@@ -71,7 +71,7 @@ export default function Login() {
       });
       router.replace('/documentos');
     } catch (requestError) {
-      setError(getErrorMessage(requestError, 'No se pudo iniciar sesion'));
+      setError(getErrorMessage(requestError, 'No se pudo iniciar sesión'));
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export default function Login() {
       setMessage(
         await getResponseMessage(
           res,
-          'Si el correo existe, recibiras un enlace para restablecer la contrasena.'
+          'Si el correo existe, recibirás un enlace para restablecer la contraseña.'
         )
       );
     } catch (requestError) {
@@ -132,7 +132,7 @@ export default function Login() {
       setMessage(
         await getResponseMessage(
           res,
-          'Si la cuenta esta pendiente, se enviara un nuevo enlace.'
+          'Si la cuenta está pendiente, se enviará un nuevo enlace.'
         )
       );
     } catch (requestError) {
@@ -152,7 +152,7 @@ export default function Login() {
 
           <p className="text-sm text-[var(--text-secondary)]">
             {forgotMode
-              ? 'Recuperacion de acceso'
+              ? 'Recuperación de acceso'
               : 'Plataforma de documentos legales'}
           </p>
         </div>
@@ -173,7 +173,7 @@ export default function Login() {
         >
           <input
             type="email"
-            placeholder="Correo electronico"
+            placeholder="Correo electrónico"
             className="input-field"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
@@ -183,7 +183,7 @@ export default function Login() {
           {!forgotMode && (
             <input
               type="password"
-              placeholder="Contrasena"
+              placeholder="Contraseña"
               className="input-field"
               onChange={(event) => setPassword(event.target.value)}
               required
@@ -198,7 +198,7 @@ export default function Login() {
             {forgotMode
               ? loading
                 ? 'Enviando...'
-                : 'Enviar enlace de recuperacion'
+                : 'Enviar enlace de recuperación'
               : loading
                 ? 'Ingresando...'
                 : 'Ingresar'}
@@ -214,7 +214,7 @@ export default function Login() {
           >
             {resendingVerification
               ? 'Reenviando...'
-              : 'Reenviar correo de verificacion'}
+              : 'Reenviar correo de verificación'}
           </button>
         )}
 
@@ -227,7 +227,7 @@ export default function Login() {
           }}
           className="mt-5 w-full text-center text-sm font-semibold text-[var(--accent)]"
         >
-          {forgotMode ? 'Volver a iniciar sesion' : 'Olvide mi contrasena'}
+          {forgotMode ? 'Volver a iniciar sesión' : 'Olvidé mi contraseña'}
         </button>
 
         <p className="mt-6 text-center text-xs text-[var(--text-secondary)]">

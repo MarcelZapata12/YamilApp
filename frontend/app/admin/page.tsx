@@ -632,7 +632,7 @@ export default function Admin() {
 
               {cuentas.length === 0 && (
                 <div className="rounded-[1.5rem] border border-[var(--border-color)] bg-[var(--surface-strong)] p-5 text-sm text-[var(--text-secondary)]">
-                  Aun no hay cuentas registradas.
+                  Aún no hay cuentas registradas.
                 </div>
               )}
             </div>
@@ -650,7 +650,7 @@ export default function Admin() {
         </h1>
         <div className="mx-auto accent-divider"></div>
         <p className="mt-3 text-sm text-[var(--text-secondary)] md:text-base">
-          Gestion de contenido, documentos y cuentas del sitio.
+          Gestión de contenido, documentos y cuentas del sitio.
         </p>
       </section>
 
@@ -676,7 +676,7 @@ export default function Admin() {
                 </p>
                 <h2 className="text-2xl font-semibold">Imagen de inicio</h2>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                  Actualiza la imagen principal de la pagina de inicio.
+                  Actualiza la imagen principal de la página de inicio.
                 </p>
               </div>
               <button
@@ -756,7 +756,7 @@ export default function Admin() {
             <div>
               <h2 className="text-xl font-semibold">Imagen de inicio</h2>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                Cambia la imagen de fondo que acompana la presentacion principal.
+                Cambia la imagen de fondo que acompaña la presentación principal.
               </p>
             </div>
 
@@ -838,7 +838,7 @@ export default function Admin() {
                 <div className="overflow-hidden rounded-[1.75rem] border border-[var(--border-color)] bg-[var(--surface-strong)] p-4">
                   <p className="text-sm font-medium">Imagen actual cargada</p>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                    Esta es la imagen que se usara como fondo en el inicio.
+                    Esta es la imagen que se usará como fondo en el inicio.
                   </p>
 
                   <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-[1.25rem] bg-[var(--surface-muted)]">
@@ -923,7 +923,7 @@ export default function Admin() {
             />
 
             <textarea
-              placeholder="Descripcion breve del documento"
+              placeholder="Descripción breve del documento"
               value={descripcionArticulo}
               onChange={(event) => setDescripcionArticulo(event.target.value)}
               className="textarea-field"

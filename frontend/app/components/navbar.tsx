@@ -114,7 +114,7 @@ export default function Navbar() {
           setStoredUserEmail(data.email);
         }
       } catch {
-        // Si esta consulta falla, conservamos la sesion local.
+        // Si esta consulta falla, conservamos la sesión local.
       }
     };
 

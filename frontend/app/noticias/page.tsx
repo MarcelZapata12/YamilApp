@@ -27,16 +27,7 @@ type NoticiasCache = {
 };
 
 const NEWS_CACHE_KEY = 'noticias-cache-v2';
-const COSTA_RICA_TIME_ZONE = 'America/Costa_Rica';
 const DEFAULT_REFRESH_HOUR = 6;
-
-function formatTimestamp(value: number) {
-  return new Intl.DateTimeFormat('es-CR', {
-    timeZone: COSTA_RICA_TIME_ZONE,
-    dateStyle: 'short',
-    timeStyle: 'medium',
-  }).format(new Date(value));
-}
 
 function readNoticiasCache(): NoticiasCache | null {
   if (typeof window === 'undefined') {
@@ -78,7 +69,7 @@ function saveNoticiasCache(cache: NoticiasCache) {
   try {
     window.localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify(cache));
   } catch {
-    // La cache local es solo respaldo; si falla, la pagina sigue funcionando.
+    // La caché local es solo respaldo; si falla, la página sigue funcionando.
   }
 }
 
@@ -87,10 +78,6 @@ export default function Noticias() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [warning, setWarning] = useState('');
-  const [ultimaActualizacion, setUltimaActualizacion] = useState('');
-  const [horaActualizacion, setHoraActualizacion] = useState(
-    DEFAULT_REFRESH_HOUR
-  );
   const [imagenesConError, setImagenesConError] = useState<Set<string>>(
     () => new Set()
   );
@@ -117,8 +104,6 @@ export default function Noticias() {
 
       setNews(articles);
       setWarning(data.warning ?? '');
-      setUltimaActualizacion(formatTimestamp(fetchedAt));
-      setHoraActualizacion(refreshHour);
       setImagenesConError(new Set());
 
       if (articles.length > 0) {
@@ -129,8 +114,6 @@ export default function Noticias() {
 
       if (cachedNews) {
         setNews(cachedNews.articles);
-        setUltimaActualizacion(formatTimestamp(cachedNews.fetchedAt));
-        setHoraActualizacion(cachedNews.refreshHour ?? DEFAULT_REFRESH_HOUR);
         setWarning(
           'Mostrando noticias guardadas localmente mientras el proveedor se recupera.'
         );
@@ -181,14 +164,8 @@ export default function Noticias() {
           Actualidad en el mundo.
         </p>
 
-        {ultimaActualizacion && (
-          <p className="mt-4 text-xs text-[var(--text-tertiary)]">
-            Última actualización: {ultimaActualizacion}
-          </p>
-        )}
-
-        <p className="mt-1 text-xs text-[var(--text-tertiary)]">
-          Actualización automática diaria a las {horaActualizacion}:00 a. m.
+        <p className="mt-4 text-xs text-[var(--text-tertiary)]">
+          La página se actualiza todos los días a las 6:00 a. m.
         </p>
       </section>
 

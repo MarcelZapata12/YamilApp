@@ -35,7 +35,7 @@ export default function Register() {
       setMessage(
         await getResponseMessage(
           res,
-          'Cuenta creada. Revisa tu correo para verificarla antes de iniciar sesion.'
+          'Cuenta creada. Revisa tu correo para verificarla antes de iniciar sesión.'
         )
       );
       setPassword('');
@@ -72,7 +72,7 @@ export default function Register() {
         <form onSubmit={register} className="space-y-4">
           <input
             type="email"
-            placeholder="Correo electronico"
+            placeholder="Correo electrónico"
             className="input-field"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
@@ -81,7 +81,7 @@ export default function Register() {
 
           <input
             type="password"
-            placeholder="Contrasena"
+            placeholder="Contraseña"
             className="input-field"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -102,7 +102,7 @@ export default function Register() {
             href="/login"
             className="secondary-button mt-4 w-full text-center"
           >
-            Ir a iniciar sesion
+            Ir a iniciar sesión
           </Link>
         )}
       </div>

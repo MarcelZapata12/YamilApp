@@ -96,7 +96,7 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({
       message:
-        'Cuenta creada. Revisa tu correo para verificarla antes de iniciar sesion.'
+        'Cuenta creada. Revisa tu correo para verificarla antes de iniciar sesión.'
     });
   } catch (err) {
     if (err.code === 11000) {
@@ -123,7 +123,7 @@ router.post('/resend-verification', async (req, res) => {
     if (!user || isEmailVerified(user)) {
       return res.json({
         message:
-          'Si la cuenta existe y esta pendiente, se enviara un nuevo enlace de verificacion.'
+          'Si la cuenta existe y está pendiente, se enviará un nuevo enlace de verificación.'
       });
     }
 
@@ -135,7 +135,7 @@ router.post('/resend-verification', async (req, res) => {
     await sendVerificationEmail(email, verificationToken);
 
     res.json({
-      message: 'Te enviamos un nuevo enlace de verificacion.'
+      message: 'Te enviamos un nuevo enlace de verificación.'
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -150,7 +150,7 @@ router.get('/verify-email', async (req, res) => {
     const token = String(req.query.token || '');
 
     if (!token) {
-      return res.status(400).json({ error: 'Falta el token de verificacion' });
+      return res.status(400).json({ error: 'Falta el token de verificación' });
     }
 
     const user = await User.findOne({
@@ -160,7 +160,7 @@ router.get('/verify-email', async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        error: 'El enlace de verificacion no es valido o ya vencio'
+        error: 'El enlace de verificación no es válido o ya venció'
       });
     }
 
@@ -205,12 +205,12 @@ router.post('/login', async (req, res) => {
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
-      return res.status(400).json({ error: 'Contrasena incorrecta' });
+      return res.status(400).json({ error: 'Contraseña incorrecta' });
     }
 
     if (!isEmailVerified(user)) {
       return res.status(403).json({
-        error: 'Debes verificar tu correo antes de iniciar sesion'
+        error: 'Debes verificar tu correo antes de iniciar sesión'
       });
     }
 
@@ -257,7 +257,7 @@ router.post('/forgot-password', async (req, res) => {
 
     res.json({
       message:
-        'Si el correo existe, recibiras un enlace para restablecer la contrasena.'
+        'Si el correo existe, recibirás un enlace para restablecer la contraseña.'
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -278,7 +278,7 @@ router.post('/reset-password', async (req, res) => {
 
     if (String(password).length < 6) {
       return res.status(400).json({
-        error: 'La contrasena debe tener al menos 6 caracteres'
+        error: 'La contraseña debe tener al menos 6 caracteres'
       });
     }
 
@@ -289,7 +289,7 @@ router.post('/reset-password', async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        error: 'El enlace para restablecer la contrasena no es valido o ya vencio'
+        error: 'El enlace para restablecer la contraseña no es válido o ya venció'
       });
     }
 
@@ -301,7 +301,7 @@ router.post('/reset-password', async (req, res) => {
     user.emailVerificationExpires = null;
     await user.save();
 
-    res.json({ message: 'Contrasena actualizada correctamente' });
+    res.json({ message: 'Contraseña actualizada correctamente' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -327,7 +327,7 @@ router.get('/me', async (req, res) => {
 
     res.json(buildPublicUser(user));
   } catch (err) {
-    res.status(401).json({ error: 'Token invalido' });
+    res.status(401).json({ error: 'Token inválido' });
   }
 });
 

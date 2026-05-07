@@ -23,7 +23,7 @@ function buildBaseTemplate({ title, intro, actionLabel, actionUrl, outro }) {
           <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#655e54;">${intro}</p>
           <a href="${actionUrl}" style="display:inline-block;background:#c8a96a;color:#ffffff;text-decoration:none;font-weight:700;border-radius:14px;padding:14px 22px;">${actionLabel}</a>
           <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#8e867a;">${outro}</p>
-          <p style="margin:18px 0 0;font-size:12px;line-height:1.6;color:#8e867a;">Si el boton no funciona, copia y pega este enlace en tu navegador:<br><span style="word-break:break-all;">${actionUrl}</span></p>
+          <p style="margin:18px 0 0;font-size:12px;line-height:1.6;color:#8e867a;">Si el botón no funciona, copia y pega este enlace en tu navegador:<br><span style="word-break:break-all;">${actionUrl}</span></p>
         </div>
       </div>
     </div>
@@ -62,7 +62,7 @@ async function sendVerificationEmail(email, token) {
     html: buildBaseTemplate({
       title: 'Verifica tu cuenta',
       intro:
-        'Recibimos una solicitud para crear tu cuenta. Confirma tu correo para poder iniciar sesion y acceder al sistema.',
+        'Recibimos una solicitud para crear tu cuenta. Confirma tu correo para poder iniciar sesión y acceder al sistema.',
       actionLabel: 'Verificar correo',
       actionUrl,
       outro: 'Este enlace vence en 24 horas. Si no creaste esta cuenta, puedes ignorar este correo.'
@@ -75,12 +75,12 @@ async function sendPasswordResetEmail(email, token) {
 
   await sendEmail({
     to: email,
-    subject: 'Restablece tu contrasena',
+    subject: 'Restablece tu contraseña',
     html: buildBaseTemplate({
-      title: 'Restablece tu contrasena',
+      title: 'Restablece tu contraseña',
       intro:
-        'Recibimos una solicitud para cambiar la contrasena de tu cuenta. Usa el siguiente boton para crear una nueva contrasena.',
-      actionLabel: 'Crear nueva contrasena',
+        'Recibimos una solicitud para cambiar la contraseña de tu cuenta. Usa el siguiente botón para crear una nueva contraseña.',
+      actionLabel: 'Crear nueva contraseña',
       actionUrl,
       outro: 'Este enlace vence en 1 hora. Si no solicitaste este cambio, puedes ignorar este correo.'
     })
