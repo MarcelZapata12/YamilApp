@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 import { apiUrl, getErrorMessage, getResponseMessage } from '../api-client';
 import {
@@ -8,6 +9,7 @@ import {
   downloadArticulo,
   openArticulo,
 } from '../articulos-client';
+import { getDocumentoPath } from './documentos-url';
 
 export default function Documentos() {
   const [articulos, setArticulos] = useState<Articulo[]>([]);
@@ -98,7 +100,12 @@ export default function Documentos() {
                   Documento
                 </p>
                 <h3 className="max-w-4xl text-xl font-semibold leading-snug text-[var(--text-primary)]">
-                  {articulo.titulo}
+                  <Link
+                    href={getDocumentoPath(articulo)}
+                    className="transition hover:text-[var(--accent)]"
+                  >
+                    {articulo.titulo}
+                  </Link>
                 </h3>
                 {articulo.descripcion && (
                   <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
@@ -108,6 +115,13 @@ export default function Documentos() {
               </div>
 
               <div className="flex flex-wrap gap-3 md:shrink-0">
+                <Link
+                  href={getDocumentoPath(articulo)}
+                  className="neutral-button px-4 py-2 text-sm"
+                >
+                  Ficha
+                </Link>
+
                 <button
                   type="button"
                   onClick={() =>
