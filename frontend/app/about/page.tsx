@@ -19,7 +19,7 @@ export default function About() {
             <div className="gold-border w-[260px] transition duration-500 hover:scale-105 md:w-[320px]">
               <Image
                 src="/perfil.jpeg"
-                alt="Yamil Chacon"
+                alt="Yamil Chacón"
                 width={320}
                 height={400}
                 className="h-full w-full object-cover"
@@ -30,7 +30,7 @@ export default function About() {
 
           <div className="mx-auto max-w-xl text-center lg:mx-0 lg:text-left">
             <h2 className="mb-2 text-3xl font-bold md:text-4xl">
-              Bradly Yamil Chacon Murillo
+              Bradly Yamil Chacón Murillo
             </h2>
 
             <p className="mb-4 text-base font-medium text-[var(--accent)] md:text-lg">
@@ -56,7 +56,9 @@ export default function About() {
               </a>
 
               <a
-                href="mailto:yamil.chaconcr@gmail.com"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=derechoysociedad.cr%40gmail.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="secondary-button text-sm"
               >
                 Correo
