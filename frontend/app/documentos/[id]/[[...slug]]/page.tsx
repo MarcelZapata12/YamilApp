@@ -126,7 +126,7 @@ export default async function DocumentoDetalle({ params }: PageProps) {
           </h2>
 
           <p className="mt-4 text-sm leading-6 text-[var(--text-secondary)] md:text-base">
-            Esta ficha permite ubicar el documento por tema, título o palabras
+            Esta página permite ubicar el documento por tema, título o palabras
             relacionadas. Para abrirlo o descargarlo, inicia sesión en la
             biblioteca.
           </p>
