@@ -19,13 +19,13 @@ export default function WhatsAppFloat() {
       rel="noopener noreferrer"
       aria-label="Contactar por WhatsApp"
       title="Contactar por WhatsApp"
-      className="fixed bottom-5 right-5 z-[70] flex h-12 w-12 items-center justify-center rounded-full bg-[#25d366] text-white shadow-[0_14px_34px_rgba(37,211,102,0.34)] ring-4 ring-white/90 transition duration-200 hover:-translate-y-0.5 hover:bg-[#1fbd5b] hover:shadow-[0_18px_42px_rgba(37,211,102,0.42)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#25d366] md:bottom-7 md:right-7 md:h-14 md:w-14"
+      className="fixed bottom-5 right-5 z-[70] flex h-14 w-14 items-center justify-center rounded-full bg-[#00d20a] text-white shadow-[0_16px_32px_rgba(0,0,0,0.24)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#00bd09] hover:shadow-[0_20px_42px_rgba(0,0,0,0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00d20a] md:bottom-7 md:right-7 md:h-16 md:w-16"
     >
       <svg
         aria-hidden="true"
         viewBox="0 0 32 32"
-        className="h-6 w-6 shrink-0 md:h-7 md:w-7"
-        style={{ transform: 'translate(0.7px, 0.4px)' }}
+        className="h-10 w-10 shrink-0 md:h-11 md:w-11"
+        style={{ transform: 'translate(0.6px, 0.35px)' }}
         fill="currentColor"
       >
         <path d="M19.11 17.14c-.28-.14-1.63-.8-1.88-.89-.25-.09-.43-.14-.62.14-.18.28-.71.89-.87 1.08-.16.18-.32.21-.59.07-.28-.14-1.17-.43-2.22-1.37-.82-.73-1.38-1.64-1.54-1.92-.16-.28-.02-.43.12-.57.13-.13.28-.32.41-.48.14-.16.18-.28.28-.46.09-.18.04-.34-.02-.48-.07-.14-.62-1.5-.85-2.05-.22-.53-.45-.46-.62-.47h-.53c-.18 0-.48.07-.73.34-.25.28-.96.93-.96 2.26 0 1.33.98 2.62 1.12 2.8.14.18 1.92 2.93 4.65 4.11.65.28 1.16.45 1.56.57.66.21 1.26.18 1.74.11.53-.08 1.63-.66 1.86-1.3.23-.64.23-1.19.16-1.3-.07-.11-.25-.18-.53-.32Z" />
